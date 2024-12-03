@@ -26,69 +26,67 @@ import { getCollection } from '../helpers/firebaseControl';
 
 import { BASE_URL } from './sitemap.xml';
 
-export default function List_lowers_requests({ services }) {
+export default function List_lawyers_requests({ services }) {
   const { t } = useTranslation();
   const { locale, pathname } = useRouter();
 
   const borderControl = services
     .filter(
-      (service) => service.serviceType[locale] === t("services.borderControl")
+      service => service.serviceType[locale] === t('services.borderControl')
     )
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const customControl = services
     .filter(
-      (service) => service.serviceType[locale] === t("services.customControl")
+      service => service.serviceType[locale] === t('services.customControl')
     )
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const entryBan = services
-    .filter((service) => service.serviceType[locale] === t("services.ban"))
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .filter(service => service.serviceType[locale] === t('services.ban'))
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const deportation = services
     .filter(
-      (service) => service.serviceType[locale] === t("services.deportation")
+      service => service.serviceType[locale] === t('services.deportation')
     )
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const legalization = services
     .filter(
-      (service) => service.serviceType[locale] === t("services.legalization")
+      service => service.serviceType[locale] === t('services.legalization')
     )
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const docService = services
-    .filter((service) => service.serviceType[locale] === t("services.document"))
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .filter(service => service.serviceType[locale] === t('services.document'))
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const monitoring = services
-    .filter(
-      (service) => service.serviceType[locale] === t("services.monitoring")
-    )
-    .map((service) => [getRightData(service, locale, "title"), service.path]);
+    .filter(service => service.serviceType[locale] === t('services.monitoring'))
+    .map(service => [getRightData(service, locale, 'title'), service.path]);
 
   const [isAllButtons, setIsAllButtons] = useState(false);
-  const [filter, setFilter] = useState(t("services.allServices"));
+  const [filter, setFilter] = useState(t('services.allServices'));
 
   const openAllButtons = () => {
     setIsAllButtons(!isAllButtons);
   };
 
-  const changeFilter = (title) => {
+  const changeFilter = title => {
     setFilter(title);
     openAllButtons();
   };
 
   useEffect(() => {
-    setFilter(t("services.allServices"));
+    setFilter(t('services.allServices'));
   }, [t]);
 
   return (
     <Layout
       type="service page"
-      desctiption={`⭐${t("navbar.services")}⭐ ${t("head.home.description")}`}
-      h1={t("navbar.services")}
+      desctiption={`⭐${t('navbar.services')}⭐ ${t('head.home.description')}`}
+      h1={t('navbar.services')}
       script={`[
         {
             "@context": "http://schema.org",
@@ -101,7 +99,7 @@ export default function List_lowers_requests({ services }) {
                   "item":
                   {
                     "@id": "${BASE_URL}",
-                    "name": "${t("pageNavigation.main")}"
+                    "name": "${t('pageNavigation.main')}"
                   }
                 },
                 {
@@ -110,7 +108,7 @@ export default function List_lowers_requests({ services }) {
                   "item":
                   {
                     "@id": "${getRightURL(locale, pathname)}",
-                    "name": "${t("navbar.services")}"
+                    "name": "${t('navbar.services')}"
                   }
                 }
               ]
@@ -120,19 +118,19 @@ export default function List_lowers_requests({ services }) {
             "@type": "FAQPage",
             "mainEntity": [
               ${services
-                .filter((el) => el.id !== "147406030952")
-                .map((el) => {
+                .filter(el => el.id !== '147406030952')
+                .map(el => {
                   return `{
               "@type": "Question",
               "name": "${el.serviceType[locale]}: ${getRightData(
                     el,
                     locale,
-                    "title"
+                    'title'
                   )}",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "${
-                  getRightData(el, locale, "text").slice(0, 250) + "..."
+                  getRightData(el, locale, 'text').slice(0, 250) + '...'
                 }"
               }
             }`;
@@ -142,7 +140,7 @@ export default function List_lowers_requests({ services }) {
         ]`}
     >
       <div className="container">
-        <PageNavigation pageType={"servises"} />
+        <PageNavigation pageType={'servises'} />
       </div>
 
       <div className="page page-bigBottom">
@@ -154,47 +152,47 @@ export default function List_lowers_requests({ services }) {
                 title={filter}
                 onClick={openAllButtons}
               />
-              {isAllButtons && filter === t("services.allServices") && (
+              {isAllButtons && filter === t('services.allServices') && (
                 <>
                   <ServisesButton
                     Img={Ukr}
-                    title={t("services.citizens")}
-                    onClick={() => changeFilter(t("services.citizens"))}
+                    title={t('services.citizens')}
+                    onClick={() => changeFilter(t('services.citizens'))}
                   />
                   <ServisesButton
                     Img={Earth}
-                    title={t("services.foreigners")}
-                    onClick={() => changeFilter(t("services.foreigners"))}
+                    title={t('services.foreigners')}
+                    onClick={() => changeFilter(t('services.foreigners'))}
                   />
                 </>
               )}
 
-              {isAllButtons && filter === t("services.foreigners") && (
+              {isAllButtons && filter === t('services.foreigners') && (
                 <>
                   <ServisesButton
                     Img={Ukr}
-                    title={t("services.citizens")}
-                    onClick={() => changeFilter(t("services.citizens"))}
+                    title={t('services.citizens')}
+                    onClick={() => changeFilter(t('services.citizens'))}
                   />
                   <ServisesButton
                     Img={Menu}
-                    title={t("services.allServices")}
-                    onClick={() => changeFilter(t("services.allServices"))}
+                    title={t('services.allServices')}
+                    onClick={() => changeFilter(t('services.allServices'))}
                   />
                 </>
               )}
 
-              {isAllButtons && filter === t("services.citizens") && (
+              {isAllButtons && filter === t('services.citizens') && (
                 <>
                   <ServisesButton
                     Img={Earth}
-                    title={t("services.foreigners")}
-                    onClick={() => changeFilter(t("services.foreigners"))}
+                    title={t('services.foreigners')}
+                    onClick={() => changeFilter(t('services.foreigners'))}
                   />
                   <ServisesButton
                     Img={Menu}
-                    title={t("services.allServices")}
-                    onClick={() => changeFilter(t("services.allServices"))}
+                    title={t('services.allServices')}
+                    onClick={() => changeFilter(t('services.allServices'))}
                   />
                 </>
               )}
@@ -203,38 +201,38 @@ export default function List_lowers_requests({ services }) {
             <div className={styles.servisesPage__section}>
               <ServisesDropdown
                 Img={Control}
-                title={t("services.borderControl")}
+                title={t('services.borderControl')}
                 values={borderControl}
               />
 
               <ServisesDropdown
                 Img={Muto}
-                title={t("services.customControl")}
+                title={t('services.customControl')}
                 values={customControl}
               />
 
-              {filter !== t("services.citizens") && (
+              {filter !== t('services.citizens') && (
                 <ServisesDropdown
                   Img={Ban}
-                  title={t("services.ban")}
+                  title={t('services.ban')}
                   values={entryBan}
                 />
               )}
 
-              {filter !== t("services.citizens") && (
+              {filter !== t('services.citizens') && (
                 <ServisesDropdown
                   Img={Dep}
-                  title={t("services.deportation")}
+                  title={t('services.deportation')}
                   values={deportation}
                 />
               )}
             </div>
 
             <div className={styles.servisesPage__section}>
-              {filter !== t("services.citizens") && (
+              {filter !== t('services.citizens') && (
                 <ServisesDropdown
                   Img={Leg}
-                  title={t("services.legalization")}
+                  title={t('services.legalization')}
                   values={legalization}
                 />
               )}
@@ -247,7 +245,7 @@ export default function List_lowers_requests({ services }) {
 
               <ServisesDropdown
                 Img={Monitor}
-                title={t("services.monitoring")}
+                title={t('services.monitoring')}
                 values={monitoring}
               />
             </div>
@@ -256,14 +254,12 @@ export default function List_lowers_requests({ services }) {
       </div>
     </Layout>
   );
-};
+}
 
 export async function getStaticProps({ locale }) {
-
   const services = await getCollection('services');
-  return { props: { services,
-    ...await serverSideTranslations(locale, ['common'])
-  },
-  revalidate: 10,
- };
-};
+  return {
+    props: { services, ...(await serverSideTranslations(locale, ['common'])) },
+    revalidate: 10,
+  };
+}
