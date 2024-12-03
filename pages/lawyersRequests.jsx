@@ -26,7 +26,7 @@ import { getCollection } from '../helpers/firebaseControl';
 
 import { BASE_URL } from './sitemap.xml';
 
-export default function List_lawyers_requests({ services }) {
+export default function LawyersRequests({ services }) {
   const { t } = useTranslation();
   const { locale, pathname } = useRouter();
 
