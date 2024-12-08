@@ -1,49 +1,49 @@
-import { useTranslation } from "next-i18next";
-import { ItemPage } from "../../components/ItemPage";
-import { PageNavigation } from "../../components/PageNavigation";
-import { getCollectionWhereKeyValue } from "../../helpers/firebaseControl";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { getRightData, getRightURL } from "../../helpers/rightData";
-import { useRouter } from "next/router";
-import { Layout } from "../../components/Layout";
-import { BASE_URL } from "../sitemap.xml";
-import ErrorPage from "../404";
+import { useTranslation } from 'next-i18next';
+import { ItemPage } from '../../components/ItemPage';
+import { PageNavigation } from '../../components/PageNavigation';
+import { getCollectionWhereKeyValue } from '../../helpers/firebaseControl';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { getRightData, getRightURL } from '../../helpers/rightData';
+import { useRouter } from 'next/router';
+import { Layout } from '../../components/Layout';
+import { BASE_URL } from '../sitemap.xml';
+import ErrorPage from '../404';
 
-export default function ServiceItemPage({ serviceItem }) {
+export default function RequestItemPage({ requestItem }) {
   const { t } = useTranslation();
   const { locale, pathname } = useRouter();
 
-  return serviceItem[0] ? (
+  return requestItem[0] ? (
     <Layout
-      type="serviceItem page"
-      title={`${serviceItem[0].serviceType[locale]}: ${getRightData(
-        serviceItem[0],
+      type="requestItem page"
+      title={`${requestItem[0].requestType[locale]}: ${getRightData(
+        requestItem[0],
         locale,
-        "title"
+        'title'
       )}`}
-      desctiption={`${serviceItem[0].serviceType[locale]}: ${getRightData(
-        serviceItem[0],
+      desctiption={`${requestItem[0].requestType[locale]}: ${getRightData(
+        requestItem[0],
         locale,
-        "title"
-      )} - ${t("head.service.desc1")}${getRightData(
-        serviceItem[0],
+        'title'
+      )} - ${t('head.request.desc1')}${getRightData(
+        requestItem[0],
         locale,
-        "title"
-      )} - ${t("head.service.desc2")}`}
+        'title'
+      )} - ${t('head.request.desc2')}`}
       script={`[
         {
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "mainEntity": {
             "@type": "Question",
-            "name": "${serviceItem[0].serviceType[locale]}: ${getRightData(
-        serviceItem[0],
+            "name": "${requestItem[0].requestType[locale]}: ${getRightData(
+        requestItem[0],
         locale,
-        "title"
+        'title'
       )}",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "${getRightData(serviceItem[0], locale, "text")}"
+              "text": "${getRightData(requestItem[0], locale, 'text')}"
             }
         }
       },
@@ -58,7 +58,7 @@ export default function ServiceItemPage({ serviceItem }) {
                   "item":
                   {
                     "@id": "${BASE_URL}",
-                    "name": "${t("pageNavigation.main")}"
+                    "name": "${t('pageNavigation.main')}"
                   }
                 },
                 {
@@ -69,11 +69,11 @@ export default function ServiceItemPage({ serviceItem }) {
                     "@id": "${getRightURL(
                       locale,
                       pathname
-                        .split("/")
-                        .slice(0, pathname.split("/").length - 1)
-                        .join("/")
+                        .split('/')
+                        .slice(0, pathname.split('/').length - 1)
+                        .join('/')
                     )}",
-                    "name": "${t("navbar.services")}"
+                    "name": "${t('navbar.requests')}"
                   }
                 },
                 {
@@ -84,13 +84,13 @@ export default function ServiceItemPage({ serviceItem }) {
                     "@id": "${getRightURL(
                       locale,
                       pathname
-                        .split("/")
-                        .slice(0, pathname.split("/").length - 1)
-                        .join("/")
-                    )}/${serviceItem[0].path}",
+                        .split('/')
+                        .slice(0, pathname.split('/').length - 1)
+                        .join('/')
+                    )}/${requestItem[0].path}",
                     "name": "${
-                      serviceItem[0].serviceType[locale]
-                    }: ${getRightData(serviceItem[0], locale, "title")}"
+                      requestItem[0].requestType[locale]
+                    }: ${getRightData(requestItem[0], locale, 'title')}"
                   }
                 }
 
@@ -99,19 +99,19 @@ export default function ServiceItemPage({ serviceItem }) {
     >
       <div className="container">
         <PageNavigation
-          title={`${serviceItem[0].serviceType[locale]}: ${getRightData(
-            serviceItem[0],
+          title={`${requestItem[0].requestType[locale]}: ${getRightData(
+            requestItem[0],
             locale,
-            "title"
+            'title'
           )}`}
         />
       </div>
       <div className="page page-bigBottom">
         <div className="container">
           <ItemPage
-            buttonName={t("services.allServices")}
-            item={serviceItem[0]}
-            linkPath="/services"
+            buttonName={t('requests.allrequests')}
+            item={requestItem[0]}
+            linkPath="/requests"
           />
         </div>
       </div>
@@ -122,15 +122,15 @@ export default function ServiceItemPage({ serviceItem }) {
 }
 
 export async function getServerSideProps({ params, locale, query }) {
-  const serviceItem = await getCollectionWhereKeyValue(
-    "services",
-    "path",
+  const requestItem = await getCollectionWhereKeyValue(
+    'requests',
+    'path',
     query.q ? query.q : params.path
   );
   return {
     props: {
-      serviceItem,
-      ...(await serverSideTranslations(locale, ["common"])),
+      requestItem,
+      ...(await serverSideTranslations(locale, ['common'])),
     },
   };
 }
