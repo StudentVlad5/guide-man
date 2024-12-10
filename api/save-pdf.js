@@ -15,6 +15,7 @@ export default async function handler(req, res) {
 
       // Перевіряємо та створюємо папку, якщо вона не існує
       const documentsPath = path.resolve('public', 'documents');
+            console.log('documentsPath', documentsPath);
 
       if (!fs.existsSync(documentsPath)) {
         fs.mkdirSync(documentsPath, { recursive: true });
@@ -22,11 +23,12 @@ export default async function handler(req, res) {
 
       // Генеруємо PDF
       const pdfStream = await renderToStream(<LawyersRequestPDF data={data} />);
-
+            console.log('pdfStream', pdfStream);
       // Зберігаємо файл на сервері
       const fileName = `document-${Date.now()}.pdf`;
       const filePath = path.join(documentsPath, fileName);
-
+console.log("fileName", fileName);
+console.log("filePath", filePath);
       // Пишемо потік у файл
       const writeStream = fs.createWriteStream(filePath);
       pdfStream.pipe(writeStream);
