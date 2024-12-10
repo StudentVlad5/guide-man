@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { renderToStream } from '@react-pdf/renderer';
-import { LawyersRequestPDF } from '../components/DownloadPDF';
+import { LawyersRequest } from '../components/DownloadPDF';
 
 export default async function handler(req, res) {
   console.log('Запит отримано:', req.method, req.body);
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       }
 
       // Генеруємо PDF
-      const pdfStream = await renderToStream(<LawyersRequestPDF data={data} />);
+      const pdfStream = await renderToStream(<LawyersRequest data={data} />);
 
       // Зберігаємо файл на сервері
       const fileName = `document-${Date.now()}.pdf`;
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error('Помилка створення PDF:', error);
-      res.status(500).json({ error: 'Не вдалося створити PDF' });
+      // res.status(500).json({ error: 'Не вдалося створити PDF' });
     }
   } else {
     res.status(405).json({ error: 'Метод не підтримується' });
