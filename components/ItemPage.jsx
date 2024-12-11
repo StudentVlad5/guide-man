@@ -104,7 +104,7 @@ export const ItemPage = ({ item, buttonName, linkPath }) => {
               </span>
             )}
           </button>
-          {isActiveForm && <OrderForm />}
+          {isActiveForm && <OrderForm currentLanguage={locale} />}
         </div>
 
         <button className="button-extension button-extension--down">
