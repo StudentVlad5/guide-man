@@ -12,7 +12,11 @@ import {
 } from '@react-pdf/renderer';
 import Emblem from '../public/gerb.png';
 
-Font.registerHyphenationCallback(word => [word]);
+// Font.registerHyphenationCallback(word => [word]);
+// Font.register({
+//   family: 'Roboto',
+//   src: 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
+// });
 
 const styles = StyleSheet.create({
   page: {
@@ -21,6 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 50,
     fontFamily: 'Times-Roman',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     lineHeight: 1.5,
     fontStyle: 'normal',
@@ -76,7 +81,8 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
   },
   italic: {
-    fontStyle: 'Times-Italic',
+    fontFamily: 'Times-Italic',
+    fontStyle: 'italic',
   },
   bold: {
     fontFamily: 'Times-Bold',
@@ -88,6 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   underline: {
+    fontFamily: 'Times-Bold',
     fontWeight: 'bold',
     textDecoration: 'underline',
   },
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
 
 const getValue = (value, fallback = 'Не вказано') => value || fallback;
 
-export const LawyersRequest = ({ data }) => {
+const LawyersRequest = ({ data }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -276,3 +283,5 @@ export const LawyersRequest = ({ data }) => {
     </Document>
   );
 };
+
+export default LawyersRequest;

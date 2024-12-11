@@ -5,9 +5,9 @@ import axios from 'axios';
 import handler from '../api/save-pdf';
 
 // Динамічне підключення PDF-компонента
-// const LawyersRequestPDF = dynamic(() => import('../components/DownloadPDF'), {
-//   ssr: false,
-// });
+const LawyersRequest = dynamic(() => import('../components/DownloadPDF'), {
+  ssr: false,
+});
 
 export default function DownloadPage() {
   const [formData, setFormData] = useState({
@@ -48,22 +48,22 @@ export default function DownloadPage() {
     setIsLoading(true);
     setError(null);
     console.log(formData);
-    handler({ method: 'POST', body: formData });
-    // try {
-    //   const response = await axios.post('/api/save-pdf', formData);
-    //   console.log(response.data);
-    //   if (response.data.fileUrl) {
-    //     setDownloadLink(response.data.fileUrl);
-    //   } else {
-    //     throw new Error('Відсутній URL файлу.');
-    //   }
-    // } catch (error) {
-    //   console.error('Помилка збереження PDF:', error);
-    //   alert('Не вдалося зберегти PDF. Перевірте дані.');
-    //   setError('Не вдалося зберегти PDF. Перевірте дані.');
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    // handler({ method: 'POST', body: formData });
+    try {
+      const response = await axios.post('/api/save-pdf', formData);
+      console.log(response.data);
+      if (response.data.fileUrl) {
+        setDownloadLink(response.data.fileUrl);
+      } else {
+        throw new Error('Відсутній URL файлу.');
+      }
+    } catch (error) {
+      console.error('Помилка збереження PDF:', error);
+      alert('Не вдалося зберегти PDF. Перевірте дані.');
+      setError('Не вдалося зберегти PDF. Перевірте дані.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
