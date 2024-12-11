@@ -1,7 +1,8 @@
+// 'use server';
 import fs from 'fs';
 import path from 'path';
-import { renderToStream } from '@react-pdf/renderer';
-import { LawyersRequest } from '../components/DownloadPDF';
+import { renderToStream, renderToFile } from '@react-pdf/renderer';
+import { LawyersRequest } from '../../components/DownloadPDF';
 
 export default async function handler(req, res) {
   console.log('Запит отримано:', req.method, req.body);
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
       console.log('Дані для створення PDF:', data);
 
       // Перевіряємо та створюємо папку, якщо вона не існує
-      const documentsPath = path.resolve('public', 'documents');
+      const documentsPath = path.resolve(process.cwd(), 'public', 'documents');
       console.log('documentsPath', documentsPath);
 
       if (!fs.existsSync(documentsPath)) {
@@ -22,14 +23,13 @@ export default async function handler(req, res) {
       }
 
       // Генеруємо PDF
-      const pdfStream = await renderToStream(<LawyersRequestPDF data={data} />);
+      const pdfStream = await renderToStream(<LawyersRequest data={data} />);
       console.log('pdfStream', pdfStream);
 
       // Зберігаємо файл на сервері
       const fileName = `document-${Date.now()}.pdf`;
       const filePath = path.join(documentsPath, fileName);
-      console.log('fileName', fileName);
-      console.log('filePath', filePath);
+
       // Пишемо потік у файл
       const writeStream = fs.createWriteStream(filePath);
       pdfStream.pipe(writeStream);
@@ -45,6 +45,12 @@ export default async function handler(req, res) {
         console.error('Помилка запису PDF:', err);
         res.status(500).json({ error: 'Помилка запису PDF' });
       });
+
+      // await renderToFile(<LawyersRequest data={data} />, filePath);
+
+      // const fileUrl = `/documents/${fileName}`;
+      // console.log('PDF створено за адресою:', fileUrl);
+      // return res.status(200).json({ fileUrl });
     } catch (error) {
       console.error('Помилка створення PDF:', error);
       // res.status(500).json({ error: 'Не вдалося створити PDF' });
