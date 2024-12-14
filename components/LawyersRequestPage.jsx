@@ -1,20 +1,24 @@
 import Link from "next/link";
-
 import PropTypes from "prop-types";
-
 import { getRightData } from "../helpers/rightData";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 import styles from "../styles/itemPage.module.scss";
 import { ButtonUp } from "./ButtonUp";
 import { useTranslation } from "next-i18next";
 
 import { QRCode } from "react-qrcode-logo";
+import { useState } from "react";
+import DownloadPage from "../pages/lawyersRequestsForm";
 
-export const ItemPage = ({ item, buttonName, linkPath }) => {
+export const LawyersRequestPage = ({ item, buttonName, linkPath }) => {
   const { locale } = useRouter();
   const { t } = useTranslation();
+  const [isActiveForm, setIsActiveForm] = useState(false);
+
+  const handleOpenForm = () => {
+    setIsActiveForm((prevState) => !prevState);
+  };
 
   const isCalc =
     item.id === "735806203922" ||
@@ -30,17 +34,6 @@ export const ItemPage = ({ item, buttonName, linkPath }) => {
 
   return (
     <div className={styles.itemPage}>
-      {item.image.length > 0 && (
-        <div className={styles.itemPage__img}>
-          <Image
-            title={`Image for information article | image-${item[locale].title}`}
-            src={item.image}
-            alt={`${item.type} - globalguide.com | image-${item[locale].title}`}
-            width={1200}
-            height={240}
-          />
-        </div>
-      )}
 
       <div className={styles.itemPage__body}>
         <h1 className={`page__title ${styles.itemPage__title}`}>
@@ -80,6 +73,25 @@ export const ItemPage = ({ item, buttonName, linkPath }) => {
             </div>
           </>
         )}
+
+        <div className={styles.buttonDiv}>
+          <button
+            type="button"
+            onClick={handleOpenForm}
+            className={`${styles.buttonDiv__button} ${
+              isActiveForm ? styles.buttonDiv__button_active : ""
+            }`}
+          >
+            {isActiveForm ? (
+              <span className={styles.buttonDiv__button_text}>Закрити</span>
+            ) : (
+              <span className={styles.buttonDiv__button_text}>
+                Замовити
+              </span>
+            )}
+          </button>
+          {isActiveForm && <DownloadPage currentLanguage={locale} />}
+        </div>
 
         <button className="button-extension button-extension--down">
           <Link href={linkPath}>

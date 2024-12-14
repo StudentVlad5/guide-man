@@ -132,5 +132,17 @@
         background-color: transparent;
       }
     }
+
+    &_file {
+      margin-top: 30px;
+      &_text {
+        color: #202020;
+        font-size: 20px;
+        font-family: "Trebuchet MS", sans-serif;
+        line-height: 20px;
+
+        margin-bottom: 30px;
+      }
+    }
   }
 }
