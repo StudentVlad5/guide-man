@@ -109,7 +109,7 @@ export default function RequestItemPage({ requestItem }) {
       <div className="page page-bigBottom">
         <div className="container">
           <ItemPage
-            buttonName={t('requests.allrequests')}
+            buttonName={t('requests.allRequests')}
             item={requestItem[0]}
             linkPath="/requests"
           />

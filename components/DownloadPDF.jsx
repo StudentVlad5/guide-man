@@ -9,7 +9,6 @@ import {
   Image,
   StyleSheet,
 } from '@react-pdf/renderer';
-import Emblem from '../public/gerb.png';
 
 const styles = StyleSheet.create({
   page: {
@@ -102,6 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 50,
     paddingLeft: 60,
+    paddingRight: 40,
   },
   list: {
     display: 'flex',
@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 60,
-    // paddingRight: 50,
     fontSize: 16,
   },
   img: {
@@ -130,7 +129,7 @@ export const LawyersRequest = ({ data }) => {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerTitle}>
-          <Image src={Emblem} style={styles.img} alt="emblem" />
+          <Image src={data.emblemBase64} style={styles.img} alt="emblem" />
           <Text style={styles.bold}>
             НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
           </Text>

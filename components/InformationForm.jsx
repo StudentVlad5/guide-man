@@ -31,6 +31,14 @@ export const InformationForm = ({
     'Адвокатские запросы',
     'Гражданство',
   ];
+  const selectRequestValues = [
+    'Запросы в органы РАЦС (регистрация актов гражданского состояния)',
+    'Запросы в Министерство внутренних дел Украины (МВД)',
+    'Запросы, связанные с временно перемещёнными лицами (ВПЛ)',
+    'Запросы в Пенсионный фонд Украины (ПФУ) и Государственную пограничную службу Украины (ДПСУ)',
+    'Запросы в Министерство обороны Украины (МОУ) и территориальные центры комплектования (ТЦК)',
+    'Запросы в Государственную миграционную службу Украины (ДМСУ) и администрацию ДПСУ',
+  ];
 
   const modules = {
     toolbar: [
@@ -72,6 +80,10 @@ export const InformationForm = ({
 
   const [serviceType, setServiceType] = useState(
     'Прохождение пограничного контроля'
+  );
+
+  const [requestType, setRequestType] = useState(
+    'Запросы в органы РАЦС (регистрация актов гражданского состояния)'
   );
 
   const getRightserviseType = type => {
@@ -137,6 +149,55 @@ export const InformationForm = ({
           ua: 'Адвокатські запити',
           ru: 'Адвокатские запросы',
           en: 'Lawyers requests',
+        };
+
+      default:
+        return {};
+    }
+  };
+
+  const getRightRequestType = type => {
+    switch (type) {
+      case 'Запросы в органы РАЦС (регистрация актов гражданского состояния)':
+        return {
+          ua: 'Запити до органів ДРАЦС (реєстрація актів цивільного стану)',
+          ru: 'Запросы в органы РАЦС (регистрация актов гражданского состояния)',
+          en: 'Requests to the Civil Registry Offices (registration of civil status acts)',
+        };
+
+      case 'Запросы в Министерство внутренних дел Украины (МВД)':
+        return {
+          ua: 'Запити до Міністерства внутрішніх справ України (МВС)',
+          ru: 'Запросы в Министерство внутренних дел Украины (МВД)',
+          en: 'Requests to the Ministry of Internal Affairs of Ukraine (MIA)',
+        };
+
+      case ' Запросы, связанные с временно перемещёнными лицами (ВПЛ)':
+        return {
+          ua: 'Запити, пов’язані з внутрішньо переміщеними особами (ВПО)',
+          ru: 'Запросы, связанные с временно перемещёнными лицами (ВПЛ)',
+          en: 'Requests related to internally displaced persons (IDPs)',
+        };
+
+      case 'Запросы в Пенсионный фонд Украины (ПФУ) и Государственную пограничную службу Украины (ДПСУ)':
+        return {
+          ua: 'Запити до Пенсійного фонду України (ПФУ) та Державної прикордонної служби України (ДПСУ)',
+          ru: 'Запросы в Пенсионный фонд Украины (ПФУ) и Государственную пограничную службу Украины (ДПСУ)',
+          en: 'Requests to the Pension Fund of Ukraine (PFU) and the State Border Guard Service of Ukraine (SBGS)',
+        };
+
+      case 'Запросы в Министерство обороны Украины (МОУ) и территориальные центры комплектования (ТЦК)':
+        return {
+          ua: 'Запити до Міністерства оборони України (МОУ) та територіальних центрів комплектування (ТЦК)',
+          ru: 'Запросы в Министерство обороны Украины (МОУ) и территориальные центры комплектования (ТЦК)',
+          en: 'Requests to the Ministry of Defense of Ukraine and Territorial Recruitment Centers (TRCs)',
+        };
+
+      case 'Запросы в Государственную миграционную службу Украины (ДМСУ) и администрацию ДПСУ':
+        return {
+          ua: 'Запити до Державної міграційної служби України (ДМСУ) та адміністрації ДПСУ',
+          ru: 'Запросы в Государственную миграционную службу Украины (ДМСУ) и администрацию ДПСУ',
+          en: 'Requests to the State Migration Service of Ukraine (SMSU) and the Administration of SBGS',
         };
 
       default:
@@ -306,6 +367,106 @@ export const InformationForm = ({
                     },
                     currentInfoItem.idPost
                   );
+
+              type === 'requests'
+                ? await updateDocumentInCollection(
+                    `${currentInfoItem.type}`,
+                    {
+                      ...currentInfoItem,
+                      ru: {
+                        title:
+                          dataModal.ru.title.length > 0
+                            ? dataModal.ru.title
+                            : currentInfoItem.ru.title,
+                        text:
+                          dataModal.ru.text.length > 0
+                            ? dataModal.ru.text
+                            : currentInfoItem.ru.text,
+                      },
+                      en: {
+                        title:
+                          dataModal.en.title.length > 0
+                            ? dataModal.en.title
+                            : currentInfoItem.en.title,
+                        text:
+                          dataModal.en.text.length > 0
+                            ? dataModal.en.text
+                            : currentInfoItem.en.text,
+                      },
+                      ua: {
+                        title:
+                          dataModal.ua.title.length > 0
+                            ? dataModal.ua.title
+                            : currentInfoItem.ua.title,
+                        text:
+                          dataModal.ua.text.length > 0
+                            ? dataModal.ua.text
+                            : currentInfoItem.ua.text,
+                      },
+
+                      path:
+                        dataModal.path.length > 0
+                          ? dataModal.path
+                          : currentInfoItem.path,
+                      dateCreating: format(new Date(), 'yyyy-MM-dd HH:mm'),
+                    },
+                    currentInfoItem.idPost
+                  )
+                : await updateDocumentInCollection(
+                    `${currentInfoItem.type}`,
+                    {
+                      ...currentInfoItem,
+                      ru: {
+                        title:
+                          dataModal.ru.title.length > 0
+                            ? dataModal.ru.title
+                            : currentInfoItem.ru.title,
+                        preview:
+                          dataModal.ru.preview.length > 0
+                            ? dataModal.ru.preview
+                            : currentInfoItem.ru.preview,
+                        text:
+                          dataModal.ru.text.length > 0
+                            ? dataModal.ru.text
+                            : currentInfoItem.ru.text,
+                      },
+                      en: {
+                        title:
+                          dataModal.en.title.length > 0
+                            ? dataModal.en.title
+                            : currentInfoItem.en.title,
+                        preview:
+                          dataModal.en.preview.length > 0
+                            ? dataModal.en.preview
+                            : currentInfoItem.en.preview,
+                        text:
+                          dataModal.en.text.length > 0
+                            ? dataModal.en.text
+                            : currentInfoItem.en.text,
+                      },
+                      ua: {
+                        title:
+                          dataModal.ua.title.length > 0
+                            ? dataModal.ua.title
+                            : currentInfoItem.ua.title,
+                        preview:
+                          dataModal.ua.preview.length > 0
+                            ? dataModal.ua.preview
+                            : currentInfoItem.ua.preview,
+                        text:
+                          dataModal.ua.text.length > 0
+                            ? dataModal.ua.text
+                            : currentInfoItem.ua.text,
+                      },
+
+                      path:
+                        dataModal.path.length > 0
+                          ? dataModal.path
+                          : currentInfoItem.path,
+                      dateCreating: format(new Date(), 'yyyy-MM-dd HH:mm'),
+                    },
+                    currentInfoItem.idPost
+                  );
             } catch (error) {
               alert(error);
             }
@@ -329,8 +490,10 @@ export const InformationForm = ({
       : async e => {
           e.preventDefault();
           const fullServiseType = getRightserviseType(serviceType);
+          const fullRequestType = getRightRequestType(requestType);
           try {
             createNewPost(dataModal, file, type, fullServiseType);
+            createNewRequestPost(dataModal, file, type, fullRequestType);
 
             setIsModal(false);
           } catch (error) {
@@ -378,6 +541,17 @@ export const InformationForm = ({
           onChange={e => setServiceType(e.target.value)}
         >
           {selectValues.map(el => {
+            return <option key={el}>{el}</option>;
+          })}
+        </select>
+      )}
+
+      {type === 'requests' && func !== 'updateInfo' && (
+        <select
+          className={styles.input}
+          onChange={e => setRequestType(e.target.value)}
+        >
+          {selectRequestValues.map(el => {
             return <option key={el}>{el}</option>;
           })}
         </select>
@@ -431,6 +605,14 @@ export const InformationForm = ({
                   {`${currentInfoItem.serviceType.ua}:`}{' '}
                 </p>
               )}
+
+            {(type === 'requests' || type === 'citizenship') &&
+              func === 'updateInfo' && (
+                <p className={styles.requestType}>
+                  {`${currentInfoItem.requestType.ua}:`}{' '}
+                </p>
+              )}
+
             <input
               type="text"
               placeholder="заголовок"
@@ -450,6 +632,24 @@ export const InformationForm = ({
             />
 
             {type !== 'services' && (
+              <textarea
+                type="text"
+                placeholder="прев'ю"
+                value={
+                  dataModal.ua.preview.length > 0
+                    ? dataModal.ua.preview
+                    : currentInfoItem
+                    ? currentInfoItem.ua.preview
+                    : dataModal.ua.preview
+                }
+                className={styles.input}
+                onChange={e =>
+                  handleChangeModalWithLang('preview', e.target.value, 'ua')
+                }
+              />
+            )}
+
+            {type !== 'requests' && (
               <textarea
                 type="text"
                 placeholder="прев'ю"
@@ -500,6 +700,14 @@ export const InformationForm = ({
                   {`${currentInfoItem.serviceType.en}:`}{' '}
                 </p>
               )}
+
+            {(type === 'requests' || type === 'citizenship') &&
+              func === 'updateInfo' && (
+                <p className={styles.requestType}>
+                  {`${currentInfoItem.requestType.en}:`}{' '}
+                </p>
+              )}
+
             <input
               type="text"
               placeholder="title"
@@ -518,6 +726,23 @@ export const InformationForm = ({
               ref={inputRef}
             />
             {type !== 'services' && (
+              <textarea
+                type="text"
+                placeholder="preview"
+                value={
+                  dataModal.en.preview.length > 0
+                    ? dataModal.en.preview
+                    : currentInfoItem
+                    ? currentInfoItem.en.preview
+                    : dataModal.en.preview
+                }
+                className={styles.input}
+                onChange={e =>
+                  handleChangeModalWithLang('preview', e.target.value, 'en')
+                }
+              />
+            )}
+            {type !== 'requests' && (
               <textarea
                 type="text"
                 placeholder="preview"
@@ -568,6 +793,13 @@ export const InformationForm = ({
                   {`${currentInfoItem.serviceType.ru}:`}{' '}
                 </p>
               )}
+            {(type === 'requests' || type === 'citizenship') &&
+              func === 'updateInfo' && (
+                <p className={styles.requestType}>
+                  {`${currentInfoItem.requestType.ru}:`}{' '}
+                </p>
+              )}
+
             <input
               type="text"
               placeholder="заголовок"
@@ -586,6 +818,23 @@ export const InformationForm = ({
               ref={inputRef}
             />
             {type !== 'services' && (
+              <textarea
+                type="text"
+                placeholder="превью"
+                value={
+                  dataModal.ru.preview.length > 0
+                    ? dataModal.ru.preview
+                    : currentInfoItem
+                    ? currentInfoItem.ru.preview
+                    : dataModal.ru.preview
+                }
+                className={styles.input}
+                onChange={e =>
+                  handleChangeModalWithLang('preview', e.target.value, 'ru')
+                }
+              />
+            )}
+            {type !== 'requests' && (
               <textarea
                 type="text"
                 placeholder="превью"

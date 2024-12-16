@@ -39,7 +39,7 @@ export const AppProvider = ({ children }) => {
       const explanationsTitles = await getTitleOfPosts('explanations', locale);
       const servicesTitles = await getTitleOfServices(locale);
       const citizenshipTitles = await getTitleOfPosts('citizenship', locale);
-      const requestsTitles = await getTitleOfRequests(locale);
+      const requestsTitles = await getTitleOfPosts('requests', locale);
       setTitleArr([
         ...newsTitles,
         ...questionsTitles,

@@ -28,11 +28,13 @@ export const Layout = ({ children, title, type, desctiption, h1, script }) => {
 
       case 'requests page':
         return h1
-          ? `${h1} • Global Guide Service`
-          : `${title} • Global Guide Service`;
+          ? `${h1} • Global Guide Lawyers Requests`
+          : `${title} • Global Guide Lawyers Requests`;
 
       case 'requestItem page':
-        return `${title} • ${t('head.request.title')} | Global Guide Service`;
+        return `${title} • ${t(
+          'head.request.title'
+        )} | Global Guide Lawyers Requests`;
 
       default:
         return `${title} | Global Guide Service`;

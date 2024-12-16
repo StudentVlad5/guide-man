@@ -38,7 +38,22 @@ export default async function handler(req, res) {
       const data = req.body;
       console.log('Дані для створення PDF:', data);
 
-      // Перевіряємо та створюємо папку, якщо вона не існує
+      // Зчитуємо зображення як Base64
+      const imagePath = path.resolve(
+        process.cwd(),
+        'public',
+        'images',
+        'gerb.png'
+      );
+      const imageBuffer = fs.readFileSync(imagePath);
+      const emblemBase64 = `data:image/png;base64,${imageBuffer.toString(
+        'base64'
+      )}`;
+
+      // Додаємо Base64-рядок у дані
+      data.emblemBase64 = emblemBase64;
+
+      // Перевіряємо та створюємо папку для документів PDF, якщо вона не існує
       const documentsPath = path.resolve(process.cwd(), 'public', 'documents');
       console.log('documentsPath', documentsPath);
 
@@ -50,7 +65,7 @@ export default async function handler(req, res) {
       const pdfStream = await renderToStream(<LawyersRequest data={data} />);
       console.log('pdfStream', pdfStream);
 
-      // Зберігаємо файл на сервері
+      // Зберігаємо файл PDF на сервері
       const fileName = `document-${Date.now()}.pdf`;
       const filePath = path.join(documentsPath, fileName);
 

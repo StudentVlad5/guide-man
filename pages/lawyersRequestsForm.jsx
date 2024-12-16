@@ -12,7 +12,17 @@ export default function DownloadPage() {
   const [formData, setFormData] = useState({
     name: 'ПІБ',
     email: 'example@example.com',
-    dateCreating: new Date().toISOString().slice(0, 10),
+    dateCreating: new Date()
+      // .toISOString()
+      // .slice(0, 10)
+      // .split('-')
+      // .reverse()
+      // .join('.'),
+      .toLocaleDateString('ru-RU', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }),
     date: { start: '', finish: '' },
     requests: 1,
     order: '',

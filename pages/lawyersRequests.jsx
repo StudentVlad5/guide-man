@@ -6,68 +6,68 @@ import { ServisesDropdown } from '../components/ServisesDropdown';
 import { ServisesButton } from '../components/ServisesButton';
 import { getRightData, getRightURL } from '../helpers/rightData';
 
+import requestsDescription from '../api/requestsDescription.json';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Layout } from '../components/Layout';
 
 import Menu from '../public/menu.svg';
-import Control from '../public/control.svg';
-import Muto from '../public/muto.svg';
-import Ban from '../public/ban.svg';
 import Ukr from '../public/ukr.svg';
 import Earth from '../public/earth.svg';
-import Dep from '../public/dep.svg';
-import Leg from '../public/leg.svg';
 import Doc from '../public/doc.svg';
-import Monitor from '../public/monitor.svg';
 
 import styles from '../styles/servicesPage.module.scss';
 import { getCollection } from '../helpers/firebaseControl';
 
 import { BASE_URL } from './sitemap.xml';
 
-export default function LawyersRequests({ services }) {
+export default function LawyersRequests({ requests }) {
+  console.log('LawyersRequests ~ requests:', requests);
   const { t } = useTranslation();
   const { locale, pathname } = useRouter();
 
-  const borderControl = services
+  const civilRegistryOffices = requests
     .filter(
-      service => service.serviceType[locale] === t('services.borderControl')
+      request =>
+        request.requestType[locale] === t('requests.civilRegistryOffices')
     )
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
+    .map(request => [getRightData(request, locale, 'title'), request.path]);
 
-  const customControl = services
+  const ministryOfInternalAffairs = requests
     .filter(
-      service => service.serviceType[locale] === t('services.customControl')
+      request =>
+        request.requestType[locale] === t('requests.ministryOfInternalAffairs')
     )
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
+    .map(request => [getRightData(request, locale, 'title'), request.path]);
 
-  const entryBan = services
-    .filter(service => service.serviceType[locale] === t('services.ban'))
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
-
-  const deportation = services
+  const internallyDisplacedPersons = requests
     .filter(
-      service => service.serviceType[locale] === t('services.deportation')
+      request =>
+        request.requestType[locale] === t('requests.internallyDisplacedPersons')
     )
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
+    .map(request => [getRightData(request, locale, 'title'), request.path]);
 
-  const legalization = services
+  const pensionFund = requests
     .filter(
-      service => service.serviceType[locale] === t('services.legalization')
+      request => request.requestType[locale] === t('requests.pensionFund')
     )
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
+    .map(request => [getRightData(request, locale, 'title'), request.path]);
 
-  const docService = services
-    .filter(service => service.serviceType[locale] === t('services.document'))
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
+  const ministryOfDefense = requests
+    .filter(
+      request => request.requestType[locale] === t('requests.ministryOfDefense')
+    )
+    .map(request => [getRightData(request, locale, 'title'), request.path]);
 
-  const monitoring = services
-    .filter(service => service.serviceType[locale] === t('services.monitoring'))
-    .map(service => [getRightData(service, locale, 'title'), service.path]);
+  const stateMigrationService = requests
+    .filter(
+      request =>
+        request.requestType[locale] === t('requests.stateMigrationService')
+    )
+    .map(request => [getRightData(request, locale, 'title'), request.path]);
 
   const [isAllButtons, setIsAllButtons] = useState(false);
-  const [filter, setFilter] = useState(t('services.allServices'));
+  const [filter, setFilter] = useState(t('requests.allRequests'));
 
   const openAllButtons = () => {
     setIsAllButtons(!isAllButtons);
@@ -79,14 +79,14 @@ export default function LawyersRequests({ services }) {
   };
 
   useEffect(() => {
-    setFilter(t('services.allServices'));
+    setFilter(t('requests.allRequests'));
   }, [t]);
 
   return (
     <Layout
-      type="service page"
-      desctiption={`⭐${t('navbar.services')}⭐ ${t('head.home.description')}`}
-      h1={t('navbar.services')}
+      type="requests page"
+      desctiption={`⭐${t('requests.button')}⭐ ${t('head.home.description')}`}
+      h1={t('requests.button')}
       script={`[
         {
             "@context": "http://schema.org",
@@ -108,7 +108,7 @@ export default function LawyersRequests({ services }) {
                   "item":
                   {
                     "@id": "${getRightURL(locale, pathname)}",
-                    "name": "${t('navbar.services')}"
+                    "name": "${t('requests.button')}"
                   }
                 }
               ]
@@ -117,12 +117,12 @@ export default function LawyersRequests({ services }) {
             "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [
-              ${services
-                .filter(el => el.id !== '147406030952')
+              ${requests
+                // .filter(el => el.id !== '147406030952')
                 .map(el => {
                   return `{
               "@type": "Question",
-              "name": "${el.serviceType[locale]}: ${getRightData(
+              "name": "${el.requestType[locale]}: ${getRightData(
                     el,
                     locale,
                     'title'
@@ -140,7 +140,7 @@ export default function LawyersRequests({ services }) {
         ]`}
     >
       <div className="container">
-        <PageNavigation pageType={'servises'} />
+        <PageNavigation />
       </div>
 
       <div className="page page-bigBottom">
@@ -152,103 +152,109 @@ export default function LawyersRequests({ services }) {
                 title={filter}
                 onClick={openAllButtons}
               />
-              {isAllButtons && filter === t('services.allServices') && (
+              {/* {isAllButtons && filter === t('requests.allRequests') && (
+                <>
+                  <ServisesButton
+                    Img={Ukr}
+                    title={t('requests.citizens')}
+                    onClick={() => changeFilter(t('requests.citizens'))}
+                  />
+                  <ServisesButton
+                    Img={Earth}
+                    title={t('requests.foreigners')}
+                    onClick={() => changeFilter(t('requests.foreigners'))}
+                  />
+                </>
+              )}
+
+              {isAllButtons && filter === t('requests.foreigners') && (
                 <>
                   <ServisesButton
                     Img={Ukr}
                     title={t('services.citizens')}
-                    onClick={() => changeFilter(t('services.citizens'))}
+                    onClick={() => changeFilter(t('requests.citizens'))}
                   />
                   <ServisesButton
-                    Img={Earth}
-                    title={t('services.foreigners')}
-                    onClick={() => changeFilter(t('services.foreigners'))}
+                    Img={Menu}
+                    title={t('requests.allRequests')}
+                    onClick={() => changeFilter(t('requests.allRequests'))}
                   />
                 </>
               )}
 
-              {isAllButtons && filter === t('services.foreigners') && (
-                <>
-                  <ServisesButton
-                    Img={Ukr}
-                    title={t('services.citizens')}
-                    onClick={() => changeFilter(t('services.citizens'))}
-                  />
-                  <ServisesButton
-                    Img={Menu}
-                    title={t('services.allServices')}
-                    onClick={() => changeFilter(t('services.allServices'))}
-                  />
-                </>
-              )}
-
-              {isAllButtons && filter === t('services.citizens') && (
+              {isAllButtons && filter === t('requests.citizens') && (
                 <>
                   <ServisesButton
                     Img={Earth}
-                    title={t('services.foreigners')}
-                    onClick={() => changeFilter(t('services.foreigners'))}
+                    title={t('requests.foreigners')}
+                    onClick={() => changeFilter(t('requests.foreigners'))}
                   />
                   <ServisesButton
                     Img={Menu}
-                    title={t('services.allServices')}
-                    onClick={() => changeFilter(t('services.allServices'))}
+                    title={t('requests.allRequests')}
+                    onClick={() => changeFilter(t('requests.allRequests'))}
                   />
                 </>
-              )}
+              )} */}
             </div>
 
             <div className={styles.servisesPage__section}>
               <ServisesDropdown
-                Img={Control}
-                title={t('services.borderControl')}
-                values={borderControl}
+                Img={Doc}
+                title={t('requests.civilRegistryOffices')}
+                values={civilRegistryOffices}
               />
 
               <ServisesDropdown
-                Img={Muto}
-                title={t('services.customControl')}
-                values={customControl}
+                Img={Doc}
+                title={t('requests.ministryOfInternalAffairs')}
+                values={ministryOfInternalAffairs}
               />
 
-              {filter !== t('services.citizens') && (
-                <ServisesDropdown
-                  Img={Ban}
-                  title={t('services.ban')}
-                  values={entryBan}
-                />
-              )}
+              {/* {filter !== t('requests.citizens') && ( */}
+              <ServisesDropdown
+                Img={Doc}
+                title={t('requests.internallyDisplacedPersons')}
+                values={internallyDisplacedPersons}
+              />
+              {/* )} */}
 
-              {filter !== t('services.citizens') && (
-                <ServisesDropdown
-                  Img={Dep}
-                  title={t('services.deportation')}
-                  values={deportation}
-                />
-              )}
+              {/* {filter !== t('requests.citizens') && ( */}
+              <ServisesDropdown
+                Img={Doc}
+                title={t('requests.pensionFund')}
+                values={pensionFund}
+              />
+              {/* )} */}
             </div>
 
             <div className={styles.servisesPage__section}>
-              {filter !== t('services.citizens') && (
-                <ServisesDropdown
-                  Img={Leg}
-                  title={t('services.legalization')}
-                  values={legalization}
-                />
-              )}
-
-              {/* <ServisesDropdown 
-                Img={Doc} 
-                title={t('services.document')}
-                values={docService}
-              /> */}
+              {/* {filter !== t('requests.citizens') && ( */}
+              <ServisesDropdown
+                Img={Doc}
+                title={t('requests.ministryOfDefense')}
+                values={ministryOfDefense}
+              />
+              {/* )} */}
 
               <ServisesDropdown
-                Img={Monitor}
-                title={t('services.monitoring')}
-                values={monitoring}
+                Img={Doc}
+                title={t('requests.stateMigrationService')}
+                values={stateMigrationService}
               />
             </div>
+          </div>
+
+          <div className={styles.ItemPage}>
+            <h1 className={`page__title ${styles.itemPage__title}`}>
+              {getRightData(requestsDescription, locale, 'title')}
+            </h1>
+            <article
+              className={styles.itemPage__text}
+              dangerouslySetInnerHTML={{
+                __html: getRightData(requestsDescription, locale, 'text'),
+              }}
+            />
           </div>
         </div>
       </div>
@@ -257,9 +263,9 @@ export default function LawyersRequests({ services }) {
 }
 
 export async function getStaticProps({ locale }) {
-  const services = await getCollection('services');
+  const requests = await getCollection('requests');
   return {
-    props: { services, ...(await serverSideTranslations(locale, ['common'])) },
+    props: { requests, ...(await serverSideTranslations(locale, ['common'])) },
     revalidate: 10,
   };
 }
