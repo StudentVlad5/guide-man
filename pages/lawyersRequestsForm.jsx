@@ -2,6 +2,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import axios from 'axios';
+import handler from '../api/save-pdf';
 
 // Динамічне підключення PDF-компонента
 const LawyersRequest = dynamic(() => import('../components/DownloadPDF'), {
@@ -47,7 +48,7 @@ export default function DownloadPage() {
     setIsLoading(true);
     setError(null);
     console.log(formData);
-
+    // handler({ method: 'POST', body: formData });
     try {
       const response = await axios.post('/api/save-pdf', formData);
       console.log(response.data);

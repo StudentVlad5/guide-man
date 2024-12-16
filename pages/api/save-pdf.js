@@ -1,32 +1,8 @@
 // 'use server';
 import fs from 'fs';
 import path from 'path';
-import { renderToStream, Font } from '@react-pdf/renderer';
+import { renderToStream, renderToFile } from '@react-pdf/renderer';
 import { LawyersRequest } from '../../components/DownloadPDF';
-
-Font.registerHyphenationCallback(word => [word]);
-Font.register({
-  family: 'Roboto',
-  fonts: [
-    {
-      src: path.join(process.cwd(), 'public', 'fonts', 'Roboto-Regular.ttf'),
-      fontWeight: 'normal',
-    },
-    {
-      src: path.join(process.cwd(), 'public', 'fonts', 'Roboto-Bold.ttf'),
-      fontWeight: 'bold',
-    },
-    {
-      src: path.join(process.cwd(), 'public', 'fonts', 'Roboto-Italic.ttf'),
-      fontStyle: 'italic',
-    },
-    {
-      src: path.join(process.cwd(), 'public', 'fonts', 'Roboto-BoldItalic.ttf'),
-      fontStyle: 'italic',
-      fontWeight: 'bold',
-    },
-  ],
-});
 
 export default async function handler(req, res) {
   console.log('Запит отримано:', req.method, req.body);
