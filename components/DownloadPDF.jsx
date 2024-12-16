@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import {
-  Font,
   Document,
   Page,
   Text,
@@ -12,23 +11,15 @@ import {
 } from '@react-pdf/renderer';
 import Emblem from '../public/gerb.png';
 
-// Font.registerHyphenationCallback(word => [word]);
-// Font.register({
-//   family: 'Roboto',
-//   src: 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
-// });
-
 const styles = StyleSheet.create({
   page: {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'white',
-    padding: 50,
+    padding: 30,
     fontFamily: 'Times-Roman',
-    // fontFamily: 'Roboto',
     fontSize: 14,
     lineHeight: 1.5,
-    fontStyle: 'normal',
   },
   header: {
     display: 'flex',
@@ -77,24 +68,21 @@ const styles = StyleSheet.create({
     textIndent: 20,
   },
   text: {
+    fontStyle: 'normal',
     textIndent: 30,
     textAlign: 'justify',
   },
   italic: {
-    fontFamily: 'Times-Italic',
     fontStyle: 'italic',
   },
   bold: {
-    fontFamily: 'Times-Bold',
     fontWeight: 'bold',
   },
   boldItalic: {
-    fontFamily: 'Times-BoldItalic',
     fontStyle: 'italic',
     fontWeight: 'bold',
   },
   underline: {
-    fontFamily: 'Times-Bold',
     fontWeight: 'bold',
     textDecoration: 'underline',
   },
@@ -126,43 +114,32 @@ const styles = StyleSheet.create({
     height: 70,
     marginBottom: 10,
     alignSelf: 'center',
+    // marginLeft: 'auto',
+    // marginRight: 'auto',
   },
 });
 
 const getValue = (value, fallback = 'Не вказано') => value || fallback;
 
-const LawyersRequest = ({ data }) => {
+export const LawyersRequestPDF = ({ data }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerTitle}>
           <Image src={Emblem} style={styles.img} alt="emblem" />
-          {/* <Text style={styles.bold}>
-                        НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
-                    </Text>
-                    <Text style={styles.bold}>АДВОКАТ</Text>
-                    <Text style={styles.bold}>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text> */}
           <Text style={styles.bold}>
-            NATIONAL ASSOCIATION OF LAWYERS OF UKRAINE
+            НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
           </Text>
-          <Text style={styles.bold}>LAWYER</Text>
-          <Text style={styles.bold}>STROGIY VALERIY FEDOROVYCH</Text>
+          <Text style={styles.bold}>АДВОКАТ</Text>
+          <Text style={styles.bold}>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text>
         </View>
         <View style={styles.header}>
-          {/* <Text style={styles.italic}>
-                        адреса: м.Харків, вул.Клочківська,350, моб.тел.
-                        095-642-94-14,
-                    </Text>
-                    <Text style={styles.italic}>
-                        ел.пошта <Link>pcentr27@gmail.com</Link> свідоцтво №278
-                        від 18 липня 2005 року
-                    </Text> */}
           <Text style={styles.italic}>
-            address: Kharkiv, Klochkivska st., 350, mobile phone 095-642-94-14,
+            адреса: м.Харків, вул.Клочківська,350, моб.тел. 095-642-94-14,
           </Text>
           <Text style={styles.italic}>
-            e-mail <Link>pcentr27@gmail.com</Link> certificate №278 dated July
-            18, 2005
+            ел.пошта <Link>pcentr27@gmail.com</Link> свідоцтво №278 від 18 липня
+            2005 року
           </Text>
         </View>
         <View style={styles.address}>
@@ -170,118 +147,65 @@ const LawyersRequest = ({ data }) => {
             <Text style={styles.text}>{getValue(data.dateCreating)}</Text>
           </View>
           <View style={styles.section}>
-            {/* <Text style={styles.text}>
-                            До {getValue(data.recipient?.name)}
-                        </Text>
-                        <Text style={styles.text}>
-                            Адреса: {getValue(data.recipient?.address)}
-                        </Text> */}
-            <Text style={styles.text}>To {getValue(data.recipient?.name)}</Text>
+            <Text style={styles.text}>До {getValue(data.recipient?.name)}</Text>
+
             <Text style={styles.text}>
-              Address: {getValue(data.recipient?.address)}
+              Адреса: {getValue(data.recipient?.address)}
             </Text>
           </View>
         </View>
         <View style={styles.sectionTitle}>
-          {/* <Text style={styles.title}>ЗАПИТ</Text>
-                    <Text style={styles.subtitle}>
-                        (в порядку статей 20, 24 Закону України «Про адвокатуру
-                        та адвокатську діяльність»)
-                    </Text> */}
-          <Text style={styles.title}>REQUEST</Text>
+          <Text style={styles.title}>ЗАПИТ</Text>
           <Text style={styles.subtitle}>
-            (in accordance with Articles 20, 24 of the Law of Ukraine “On the
-            Bar and Advocacy”)
+            (в порядку статей 20, 24 Закону України «Про адвокатуру та
+            адвокатську діяльність»)
           </Text>
         </View>
         <View style={styles.section}>
-          {/* <Text style={styles.text}>
-                        Відповідно до ст. 24 ЗУ «Про адвокатуру та адвокатської
-                        діяльності» Орган державної влади, орган місцевого
-                        самоврядування, їх посадові та службові особи, керівники
-                        підприємств, установ, організацій, громадських
-                        об’єднань, яким направлено адвокатський запит,
-                        зобов’язані{' '}
-                        <Text style={styles.underline}>
-                            не пізніше п’яти робочих днів з дня отримання запиту{' '}
-                        </Text>{' '}
-                        надати адвокату відповідну інформацію, копії документів,
-                        крім інформації з обмеженим доступом і копій документів,
-                        в яких міститься інформація з обмеженим доступом (ч. 2).
-                    </Text> */}
           <Text style={styles.text}>
-            According to Article 24 of the Law of Ukraine “On Advocacy and
-            Advocacy Activities”, a state authority, a local self-government
-            body, their officials and employees, heads of enterprises,
-            institutions, organizations, public associations to whom a request
-            for an attorney has been sent, are obliged to{' '}
+            Відповідно до ст. 24 ЗУ «Про адвокатуру та адвокатської діяльності»
+            Орган державної влади, орган місцевого самоврядування, їх посадові
+            та службові особи, керівники підприємств, установ, організацій,
+            громадських об’єднань, яким направлено адвокатський запит,
+            зобов’язані{' '}
             <Text style={styles.underline}>
-              no later than five business days from the date of receipt of the
-              request{' '}
+              не пізніше п’яти робочих днів з дня отримання запиту{' '}
             </Text>{' '}
-            provide the lawyer with relevant information, copies of documents,
-            except for restricted information and copies of documents,
-            containing restricted information (part 2).
+            надати адвокату відповідну інформацію, копії документів, крім
+            інформації з обмеженим доступом і копій документів, в яких міститься
+            інформація з обмеженим доступом (ч. 2).
           </Text>
         </View>
         <View style={styles.section}>
-          {/* <Text style={styles.text}>
-                        Прошу надати зазначені документи та інформацію у вигляді
-                        засвідчених копій та направити їх за наступною адресою:{' '}
-                        <Text style={styles.boldItalic}>
-                            pcentr27@gmail.com.
-                        </Text>
-                    </Text>
-                    <Text style={styles.text}>
-                        Даний запит подається в інтересах {getValue(data.name)},
-                        з його згодою на збір та обробку персональних даних
-                        відповідно до законодавства України.
-                    </Text> */}
           <Text style={styles.text}>
-            Please provide the above documents and information in the form of
-            certified copies and send them to the following address:{' '}
+            Прошу надати зазначені документи та інформацію у вигляді засвідчених
+            копій та направити їх за наступною адресою:{' '}
             <Text style={styles.boldItalic}>pcentr27@gmail.com.</Text>
           </Text>
           <Text style={styles.text}>
-            This request is submitted in the interests of {getValue(data.name)},
-            with its consent to the collection and processing of personal data
-            in accordance with the legislation of Ukraine.
+            Даний запит подається в інтересах {getValue(data.name)}, з його
+            згодою на збір та обробку персональних даних відповідно до
+            законодавства України.
           </Text>
         </View>
         <View style={styles.apps}>
-          {/* <Text style={styles.italic}>Додаток: </Text>
-                    <View style={styles.list}>
-                        <Text style={styles.italic}>- копія ордеру </Text>
-                        <Text style={styles.italic}>
-                            - копія свідоцтва про право на заняття адвокатською
-                            діяльністю
-                        </Text>
-                        <Text style={styles.italic}>
-                            - згода на розголошення персональних даних
-                        </Text>
-                    </View> */}
-          <Text style={styles.italic}>Addition: </Text>
+          <Text style={styles.italic}>Додаток: </Text>
           <View style={styles.list}>
-            <Text style={styles.italic}>- copy of the order </Text>
+            <Text style={styles.italic}>- копія ордеру </Text>
             <Text style={styles.italic}>
-              - copy of the certificate of the right to practice law
+              - копія свідоцтва про право на заняття адвокатською діяльністю
             </Text>
             <Text style={styles.italic}>
-              - consent to the disclosure of personal data
+              - згода на розголошення персональних даних
             </Text>
           </View>
         </View>
         <View style={styles.signature}>
-          {/* <Text style={styles.text}>З повагою, адвокат</Text>
-                    <Text style={styles.text}>(підпис)</Text>
-                    <Text style={styles.text}>В.Ф.Строгий</Text> */}
-          <Text style={styles.text}>Sincerely, lawyer</Text>
-          <Text style={styles.text}>(signature)</Text>
-          <Text style={styles.text}>V.F.Strohy</Text>
+          <Text style={styles.text}>З повагою, адвокат</Text>
+          <Text style={styles.text}>(підпис)</Text>
+          <Text style={styles.text}>В.Ф.Строгий</Text>
         </View>
       </Page>
     </Document>
   );
 };
-
-export default LawyersRequest;

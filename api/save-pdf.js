@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { renderToStream } from '@react-pdf/renderer';
-import { LawyersRequest } from '../components/DownloadPDF';
+import { LawyersRequestPDF } from '../components/DownloadPDF';
 
 export default async function handler(req, res) {
   console.log('Запит отримано:', req.method, req.body);
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
       // Перевіряємо та створюємо папку, якщо вона не існує
       const documentsPath = path.resolve('public', 'documents');
-      console.log('documentsPath', documentsPath);
+            console.log('documentsPath', documentsPath);
 
       if (!fs.existsSync(documentsPath)) {
         fs.mkdirSync(documentsPath, { recursive: true });
@@ -23,13 +23,12 @@ export default async function handler(req, res) {
 
       // Генеруємо PDF
       const pdfStream = await renderToStream(<LawyersRequestPDF data={data} />);
-      console.log('pdfStream', pdfStream);
-
+            console.log('pdfStream', pdfStream);
       // Зберігаємо файл на сервері
       const fileName = `document-${Date.now()}.pdf`;
       const filePath = path.join(documentsPath, fileName);
-      console.log('fileName', fileName);
-      console.log('filePath', filePath);
+console.log("fileName", fileName);
+console.log("filePath", filePath);
       // Пишемо потік у файл
       const writeStream = fs.createWriteStream(filePath);
       pdfStream.pipe(writeStream);
@@ -47,7 +46,7 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error('Помилка створення PDF:', error);
-      // res.status(500).json({ error: 'Не вдалося створити PDF' });
+      res.status(500).json({ error: 'Не вдалося створити PDF' });
     }
   } else {
     res.status(405).json({ error: 'Метод не підтримується' });
