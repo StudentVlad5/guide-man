@@ -10,5 +10,5 @@ Disallow: /registration
 User-agent: *
 Allow: /
 
-Sitemap: https://ggs.com.ua/sitemap.xml
-Sitemap: https://ggs.com.ua/sitemap_image.xml
+Sitemap: https://global-guide.vercel.app/sitemap.xml
+Sitemap: https://global-guide.vercel.app/sitemap_image.xml

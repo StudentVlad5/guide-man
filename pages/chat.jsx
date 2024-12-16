@@ -13,13 +13,12 @@ import { BASE_URL } from './sitemap.xml';
 
 import { getRightURL } from '../helpers/rightData';
 import { ButtonUp } from '../components/ButtonUp';
-import { QRCode } from 'react-qrcode-logo';
 
-export default function ChatPage() {
-  const { t } = useTranslation();
+export default function ChatPage () {
+  const { t }  = useTranslation();
 
   const { locale, pathname } = useRouter();
-
+  
   return (
     <Layout
       type='service page'
@@ -62,29 +61,23 @@ export default function ChatPage() {
       <div className="container">
         <PageNavigation />
       </div>
-
+      
       <div className="page">
         <div className="container">
           <div className={styles.itemPage}>
             <h1 className={`page__title ${styles.itemPage__title}`}>
               {getRightData(chatPage, locale, 'title')}
             </h1>
-            <article
+            <article 
               className={styles.itemPage__text}
-              dangerouslySetInnerHTML={{ __html: getRightData(chatPage, locale, 'text') }}
+              dangerouslySetInnerHTML={{ __html:  getRightData(chatPage, locale, 'text')}}
             />
           </div>
-          <div className={styles.itemPage__wrapper}>
-            <button className="button-extension  chatPage__button">
-              <Link href="https://t.me/emigrant_helper_bot">
-                <p>{t('chatPage.button')}</p>
-              </Link>
-            </button>
-            <QRCode
-              value='https://t.me/emigrant_helper_bot'
-              size={200}
-            />
-          </div>
+          <button className="button-extension  chatPage__button">
+            <Link href="/">
+              <p>{t('chatPage.button')}</p>
+            </Link>
+          </button>
         </div>
       </div>
       <ButtonUp />
@@ -93,9 +86,9 @@ export default function ChatPage() {
 };
 
 export async function getStaticProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ['common'])),
+		},
+	}
 }

@@ -44,7 +44,7 @@ export const ServisesDropdown = ({ title, Img, values }) => {
         </div>
         {isOpen && (
           <div className={styles.servisesDropdown__values}>
-            {values?.length > 0 && values?.map(el => {
+            {values.map(el => {
               return (
                 <li
                   className={styles.servisesDropdown__item}
@@ -70,5 +70,5 @@ export const ServisesDropdown = ({ title, Img, values }) => {
 ServisesDropdown.propTypes = {
   img: PropTypes.string,
   title: PropTypes.string.isRequired,
-  values: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+  values: PropTypes.arrayOf(PropTypes.string),
 };

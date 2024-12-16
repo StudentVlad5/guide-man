@@ -63,20 +63,6 @@ export async function getTitleOfServices (locale) {
 });
 };
 
-export function getFieldsOfPosts (collection, field) {
-    return new Promise(function (resolve, reject) {
-      db.collection(collection).get().then(res => {
-        const data = [];
-          res.forEach((doc) => {
-            data.push(
-              doc.data()[field]
-            );
-          });
-          resolve(data);
-      }).catch((error) =>
-  reject(error))
-  })};
-
 
 
 export function updateDocumentInCollection(collection, document, idDocumnent) {

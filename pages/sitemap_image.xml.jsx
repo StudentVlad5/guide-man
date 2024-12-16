@@ -34,18 +34,6 @@ export const getServerSideProps = async ({ res }) => {
             if (el === '&') {
               el = '&amp;'
             };
-	    if (el === '<') {
-              el = '&lt;'
-            };
-	    if (el === '>') {
-              el = '&gt;'
-            };
-	    if (el === '"') {
-              el = '&quot;'
-            };
-	    if (el === '\'') {
-              el = '&apos;'
-            };
             return el;
            }).join('')}</image:loc>  
        </image:image>   

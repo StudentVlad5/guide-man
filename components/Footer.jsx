@@ -9,10 +9,9 @@ import Tg from '../public/tg.svg';
 import Mail from '../public/mail.svg';
 
 import styles from '../styles/footer.module.scss';
-import { QRCode } from 'react-qrcode-logo';
 
 export const Footer = () => {
-  const { t } = useTranslation();
+  const { t }  = useTranslation();
 
   return (
     <footer className={styles.footer}>
@@ -21,12 +20,12 @@ export const Footer = () => {
           <section className={styles.footer__section}>
             <Link href="/">
               <LogoWhite
-                alt="logo"
+                alt="logo" 
                 className={`${styles.footer__logo} logo--footer`} />
             </Link>
-
+            
             <p className={styles.footer__text}>
-              {t('footer.content')}
+            {t('footer.content')}
             </p>
           </section>
           <section className={`${styles.footer__section} ${styles.footer__section__2}`}>
@@ -49,27 +48,15 @@ export const Footer = () => {
               <a href="https://www.instagram.com/">
                 <Insta alt="insta" />
               </a>
-              <a href="https://t.me/emigrant_helper_bot">
+              <a href="https://t.me/">
                 <Tg alt="tg" />
-              </a>
-            </div>
-            <div className={styles.footer__iconsWrap}>
-              <h3 className={styles.footer__section__title} style={{cursor: 'text'}}>
-                {t('footer.telegram')}
-              </h3>
-              <a href='https://t.me/emigrant_helper_bot' alt=''>
-                <QRCode
-                  value='https://t.me/emigrant_helper_bot'
-                  logoImage='../telegram-icon.svg'
-                  size={80}
-                />
               </a>
             </div>
             <h3 className={styles.footer__section__title}>
               {t('footer.support')}
             </h3>
-            <a
-              href="mailto:Guidepro.ua@gmail.com"
+            <a 
+              href="mailto:Guidepro.ua@gmail.com" 
               className={styles.footer__link}
             >
               <Mail className={styles.footer__link__logo} />
