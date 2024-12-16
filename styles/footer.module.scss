@@ -167,18 +167,6 @@
         display: none;
       }
     }
-
-    &__iconsWrap {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      cursor: pointer;
-  
-      @include onMobile {
-        gap: 10px;
-        margin-bottom: 25px;
-      }
-    }
   }
 
    
