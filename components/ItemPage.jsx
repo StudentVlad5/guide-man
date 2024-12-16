@@ -11,10 +11,17 @@ import { ButtonUp } from "./ButtonUp";
 import { useTranslation } from "next-i18next";
 
 import { QRCode } from "react-qrcode-logo";
+import { OrderForm } from "./OrderForm";
+import { useState } from "react";
 
 export const ItemPage = ({ item, buttonName, linkPath }) => {
   const { locale } = useRouter();
   const { t } = useTranslation();
+  const [isActiveForm, setIsActiveForm] = useState(false);
+
+  const handleOpenForm = () => {
+    setIsActiveForm((prevState) => !prevState);
+  };
 
   const isCalc =
     item.id === "735806203922" ||
@@ -80,6 +87,25 @@ export const ItemPage = ({ item, buttonName, linkPath }) => {
             </div>
           </>
         )}
+
+        <div className={styles.buttonDiv}>
+          <button
+            type="button"
+            onClick={handleOpenForm}
+            className={`${styles.buttonDiv__button} ${
+              isActiveForm ? styles.buttonDiv__button_active : ""
+            }`}
+          >
+            {isActiveForm ? (
+              <span className={styles.buttonDiv__button_text}>Закрити</span>
+            ) : (
+              <span className={styles.buttonDiv__button_text}>
+                Замовити послугу
+              </span>
+            )}
+          </button>
+          {isActiveForm && <OrderForm currentLanguage={locale} />}
+        </div>
 
         <button className="button-extension button-extension--down">
           <Link href={linkPath}>
