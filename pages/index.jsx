@@ -42,7 +42,7 @@ export default function HomePage({ questions, news }) {
     t('services.ban'),
     t('services.deportation'),
     t('services.legalization'),
-    t('services.document'),
+    // t('services.document'),
     t('services.monitoring'),
     t('services.requests'),
   ];
