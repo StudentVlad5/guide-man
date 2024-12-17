@@ -1,13 +1,13 @@
-import { useTranslation } from 'next-i18next';
-import { ItemPage } from '../../components/ItemPage';
-import { PageNavigation } from '../../components/PageNavigation';
-import { getCollectionWhereKeyValue } from '../../helpers/firebaseControl';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { getRightData, getRightURL } from '../../helpers/rightData';
-import { useRouter } from 'next/router';
-import { Layout } from '../../components/Layout';
-import { BASE_URL } from '../sitemap.xml';
-import ErrorPage from '../404';
+import { useTranslation } from "next-i18next";
+import { PageNavigation } from "../../components/PageNavigation";
+import { getCollectionWhereKeyValue } from "../../helpers/firebaseControl";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { getRightData, getRightURL } from "../../helpers/rightData";
+import { useRouter } from "next/router";
+import { Layout } from "../../components/Layout";
+import { BASE_URL } from "../sitemap.xml";
+import ErrorPage from "../404";
+import { LawyersRequestPage } from "../../components/LawyersRequestPage";
 
 export default function RequestItemPage({ requestItem }) {
   const { t } = useTranslation();
@@ -19,17 +19,17 @@ export default function RequestItemPage({ requestItem }) {
       title={`${requestItem[0].requestType[locale]}: ${getRightData(
         requestItem[0],
         locale,
-        'title'
+        "title"
       )}`}
       desctiption={`${requestItem[0].requestType[locale]}: ${getRightData(
         requestItem[0],
         locale,
-        'title'
-      )} - ${t('head.request.desc1')}${getRightData(
+        "title"
+      )} - ${t("head.request.desc1")}${getRightData(
         requestItem[0],
         locale,
-        'title'
-      )} - ${t('head.request.desc2')}`}
+        "title"
+      )} - ${t("head.request.desc2")}`}
       script={`[
         {
           "@context": "https://schema.org",
@@ -39,11 +39,11 @@ export default function RequestItemPage({ requestItem }) {
             "name": "${requestItem[0].requestType[locale]}: ${getRightData(
         requestItem[0],
         locale,
-        'title'
+        "title"
       )}",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "${getRightData(requestItem[0], locale, 'text')}"
+              "text": "${getRightData(requestItem[0], locale, "text")}"
             }
         }
       },
@@ -58,7 +58,7 @@ export default function RequestItemPage({ requestItem }) {
                   "item":
                   {
                     "@id": "${BASE_URL}",
-                    "name": "${t('pageNavigation.main')}"
+                    "name": "${t("pageNavigation.main")}"
                   }
                 },
                 {
@@ -69,11 +69,11 @@ export default function RequestItemPage({ requestItem }) {
                     "@id": "${getRightURL(
                       locale,
                       pathname
-                        .split('/')
-                        .slice(0, pathname.split('/').length - 1)
-                        .join('/')
+                        .split("/")
+                        .slice(0, pathname.split("/").length - 1)
+                        .join("/")
                     )}",
-                    "name": "${t('navbar.requests')}"
+                    "name": "${t("navbar.requests")}"
                   }
                 },
                 {
@@ -84,13 +84,13 @@ export default function RequestItemPage({ requestItem }) {
                     "@id": "${getRightURL(
                       locale,
                       pathname
-                        .split('/')
-                        .slice(0, pathname.split('/').length - 1)
-                        .join('/')
+                        .split("/")
+                        .slice(0, pathname.split("/").length - 1)
+                        .join("/")
                     )}/${requestItem[0].path}",
                     "name": "${
                       requestItem[0].requestType[locale]
-                    }: ${getRightData(requestItem[0], locale, 'title')}"
+                    }: ${getRightData(requestItem[0], locale, "title")}"
                   }
                 }
 
@@ -102,14 +102,14 @@ export default function RequestItemPage({ requestItem }) {
           title={`${requestItem[0].requestType[locale]}: ${getRightData(
             requestItem[0],
             locale,
-            'title'
+            "title"
           )}`}
         />
       </div>
       <div className="page page-bigBottom">
         <div className="container">
-          <ItemPage
-            buttonName={t('requests.allRequests')}
+          <LawyersRequestPage
+            buttonName={t("requests.allRequests")}
             item={requestItem[0]}
             linkPath="/requests"
           />
@@ -123,14 +123,14 @@ export default function RequestItemPage({ requestItem }) {
 
 export async function getServerSideProps({ params, locale, query }) {
   const requestItem = await getCollectionWhereKeyValue(
-    'requests',
-    'path',
+    "requests",
+    "path",
     query.q ? query.q : params.path
   );
   return {
     props: {
       requestItem,
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ["common"])),
     },
   };
 }
