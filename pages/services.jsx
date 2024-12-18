@@ -144,7 +144,7 @@ export default function Services({ services }) {
         ]`}
     >
       <div className="container">
-        <PageNavigation pageType={'servises'} />
+        <PageNavigation pageType={'services'} />
       </div>
 
       <div className="page page-bigBottom">

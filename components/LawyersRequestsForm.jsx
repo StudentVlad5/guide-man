@@ -1,71 +1,71 @@
-"use client";
-import dynamic from "next/dynamic";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+'use client';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-import styles from "../styles/lawyersRequestForm.module.scss";
+import styles from '../styles/lawyersRequestForm.module.scss';
 
-import countries from "i18n-iso-countries";
-import ukLocale from "i18n-iso-countries/langs/uk.json";
-import ruLocale from "i18n-iso-countries/langs/ru.json";
-import enLocale from "i18n-iso-countries/langs/en.json";
+import countries from 'i18n-iso-countries';
+import ukLocale from 'i18n-iso-countries/langs/uk.json';
+import ruLocale from 'i18n-iso-countries/langs/ru.json';
+import enLocale from 'i18n-iso-countries/langs/en.json';
 
 countries.registerLocale(ukLocale);
 countries.registerLocale(ruLocale);
 countries.registerLocale(enLocale);
 
 // Динамічне підключення PDF-компонента
-const LawyersRequest = dynamic(() => import("../components/DownloadPDF"), {
+const LawyersRequest = dynamic(() => import('./DownloadPDF'), {
   ssr: false,
 });
 
-export default function DownloadPage({ currentLanguage }) {
+export default function LawyersRequestForm({ currentLanguage }) {
   // const language = currentLanguage === "ua" ? "uk" : currentLanguage;
   const language = ukLocale;
 
   const [formData, setFormData] = useState({
-    name: "", //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
-    surnamme: "", //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
-    fatherName: "", //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
-    email: "example@example.com", //????
-    birthday: "", //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП
-    requesterBirthday: "", //РАЦС
-    requesterName: "", //РАЦС
-    requesterFile: "", //РАЦС
-    deathDay: "", //РАЦС
+    name: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
+    surnamme: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
+    fatherName: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
+    email: 'example@example.com', //????
+    birthday: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП
+    requesterBirthday: '', //РАЦС
+    requesterName: '', //РАЦС
+    requesterFile: '', //РАЦС
+    deathDay: '', //РАЦС
     dateCreating: new Date() //ВСІ ФОРМИ
       // .toISOString()
       // .slice(0, 10)
       // .split('-')
       // .reverse()
       // .join('.'),
-      .toLocaleDateString("ru-RU", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+      .toLocaleDateString('ru-RU', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
       }),
-    date: { start: "", finish: "" },
+    date: { start: '', finish: '' },
     recipient: {
-      name: "Держ орган",
-      address: "повна адреса органу",
+      name: 'Держ орган',
+      address: 'повна адреса органу',
     },
-    citizenship: "", //АДПСУ,
-    passportNum: "", //АДПСУ,
-    dateBorderCrossingStart: "", //АДПСУ,
-    dateBorderCrossingEnd: "", //АДПСУ,
+    citizenship: '', //АДПСУ,
+    passportNum: '', //АДПСУ,
+    dateBorderCrossingStart: '', //АДПСУ,
+    dateBorderCrossingEnd: '', //АДПСУ,
     // ПІБ подружжя(тобто обох супругів)
-    couplePIB1: "", //РАЦС
-    couplePIB2: "", //РАЦС
+    couplePIB1: '', //РАЦС
+    couplePIB2: '', //РАЦС
     // (дату надання довідки про місце проживання)
-    dateResidence: "", //РАЦС
-    tckName: "", //МОУ і ТЦК
-    tckAddress: "", //МОУ і ТЦК
-    tckEmail: "", //МОУ і ТЦК
-    eventDate: "", //ГУНП
-    eventTime: "", //ГУНП
-    eventPlace: "", //ГУНП
-    ipn: "", //ПФУ і ДПСУ
-    propertyAddress: "", //ВПО
+    dateResidence: '', //РАЦС
+    tckName: '', //МОУ і ТЦК
+    tckAddress: '', //МОУ і ТЦК
+    tckEmail: '', //МОУ і ТЦК
+    eventDate: '', //ГУНП
+    eventTime: '', //ГУНП
+    eventPlace: '', //ГУНП
+    ipn: '', //ПФУ і ДПСУ
+    propertyAddress: '', //ВПО
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +79,7 @@ export default function DownloadPage({ currentLanguage }) {
   //   }));
   // };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -87,14 +87,14 @@ export default function DownloadPage({ currentLanguage }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     console.log(formData);
   };
 
-  const handleRecipientChange = (e) => {
+  const handleRecipientChange = e => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       recipient: { ...prev.recipient, [name]: value },
     }));
@@ -106,17 +106,17 @@ export default function DownloadPage({ currentLanguage }) {
     console.log(formData);
 
     try {
-      const response = await axios.post("/api/save-pdf", formData);
+      const response = await axios.post('/api/save-pdf', formData);
       console.log(response.data);
       if (response.data.fileUrl) {
         setDownloadLink(response.data.fileUrl);
       } else {
-        throw new Error("Відсутній URL файлу.");
+        throw new Error('Відсутній URL файлу.');
       }
     } catch (error) {
-      console.error("Помилка збереження PDF:", error);
-      alert("Не вдалося зберегти PDF. Перевірте дані.");
-      setError("Не вдалося зберегти PDF. Перевірте дані.");
+      console.error('Помилка збереження PDF:', error);
+      alert('Не вдалося зберегти PDF. Перевірте дані.');
+      setError('Не вдалося зберегти PDF. Перевірте дані.');
     } finally {
       setIsLoading(false);
     }
@@ -148,59 +148,12 @@ export default function DownloadPage({ currentLanguage }) {
 
   return (
     <>
-      <div>
-        <h1>Сформувати адвокатський запит</h1>
-        <div>
-          <label>Період початку:</label>
-          <input
-            name="start"
-            type="date"
-            value={formData.date.start}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                date: { ...prev.date, start: e.target.value },
-              }))
-            }
-          />
-        </div>
-        <div>
-          <label>Період закінчення:</label>
-          <input
-            name="finish"
-            type="date"
-            value={formData.date.finish}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                date: { ...prev.date, finish: e.target.value },
-              }))
-            }
-          />
-        </div>
-        <div>
-          <label>Отримувач (назва):</label>
-          <input
-            name="name"
-            value={formData.recipient.name}
-            onChange={handleRecipientChange}
-          />
-        </div>
-        <div>
-          <label>Отримувач (адреса):</label>
-          <input
-            name="address"
-            value={formData.recipient.address}
-            onChange={handleRecipientChange}
-          />
-        </div>
-      </div>
-
+      <h1>Сформувати адвокатський запит</h1>
       <div className={styles.orderForm}>
         <form onSubmit={handleSubmit} className={styles.orderForm__form}>
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Громадянство:{" "}
+              Громадянство:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <div className={styles.orderForm__form_selectWrapper}>
@@ -212,13 +165,13 @@ export default function DownloadPage({ currentLanguage }) {
                 required
               >
                 <option value="" disabled>
-                  {language === "uk"
-                    ? "Виберіть країну"
-                    : language === "ru"
-                    ? "Выберите страну"
-                    : "Select a country"}
+                  {language === 'uk'
+                    ? 'Виберіть країну'
+                    : language === 'ru'
+                    ? 'Выберите страну'
+                    : 'Select a country'}
                 </option>
-                {countryList.map((country) => (
+                {countryList.map(country => (
                   <option key={country.value} value={country.label}>
                     {country.label}
                   </option>
@@ -229,7 +182,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Ім'я: <span className={styles.orderForm__form_required}>*</span>
+              Ім`я: <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
               className={styles.orderForm__form_input}
@@ -245,7 +198,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Прізвище:{" "}
+              Прізвище:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -275,7 +228,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              ПІБ (людина яка робить запит):{" "}
+              ПІБ (людина яка робить запит):{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -292,7 +245,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Документ який підтверджує рідство:{" "}
+              Документ який підтверджує рідство:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -324,7 +277,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Дата народження:{" "}
+              Дата народження:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -340,7 +293,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Дата смерті:{" "}
+              Дата смерті:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -356,7 +309,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Серія та номер маспорту:{" "}
+              Серія та номер маспорту:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -373,7 +326,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Дата початку перетину кордону:{" "}
+              Дата початку перетину кордону:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -389,7 +342,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Дата закінчення перетину кордону:{" "}
+              Дата закінчення перетину кордону:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -405,7 +358,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              ПІБ подружжя (тобто обох супругів):{" "}
+              ПІБ подружжя (тобто обох супругів):{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -433,7 +386,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Дата надання довідки про місце проживання:{" "}
+              Дата надання довідки про місце проживання:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -449,7 +402,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Назава (район) ТЦК:{" "}
+              Назава (район) ТЦК:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -466,7 +419,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Адреса ТЦК:{" "}
+              Адреса ТЦК:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -483,7 +436,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Електронна пошта ТЦК:{" "}
+              Електронна пошта ТЦК:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -500,7 +453,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Дата події:{" "}
+              Дата події:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -516,7 +469,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Час події:{" "}
+              Час події:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -532,7 +485,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Місце події:{" "}
+              Місце події:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -549,7 +502,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              ІПН (єдрпоу):{" "}
+              ІПН (єдрпоу):{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -566,7 +519,7 @@ export default function DownloadPage({ currentLanguage }) {
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
-              Адреса майна:{" "}
+              Адреса майна:{' '}
               <span className={styles.orderForm__form_required}>*</span>
             </span>
             <input
@@ -587,9 +540,9 @@ export default function DownloadPage({ currentLanguage }) {
             type="submit"
             className={styles.orderForm__form_button}
           >
-            {isLoading ? "Зберігається..." : "Зберегти PDF"}
+            {isLoading ? 'Зберігається...' : 'Зберегти PDF'}
           </button>
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
           {downloadLink && (
             <div className={styles.orderForm__form_file}>
               <p className={styles.orderForm__form_file_text}>

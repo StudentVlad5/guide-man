@@ -23,6 +23,9 @@ import { AppContext } from '../components/AppProvider';
 
 export default function HomePage({ questions, news }) {
   const { servicesArray } = useContext(AppContext);
+  console.log('HomePage ~ servicesArray:', servicesArray);
+  const { requestsArray } = useContext(AppContext);
+  console.log('HomePage ~ requestsArray:', requestsArray);
 
   const [filterValue, setFilterValue] = useState({
     serviceType: '',
@@ -53,7 +56,6 @@ export default function HomePage({ questions, news }) {
           .filter(el => el[0].includes(filterValue.serviceType))
           .map(el => el[0].split(':')[1])
       : [];
-
   useEffect(() => {
     setFilterValue({
       serviceType: '',
@@ -62,12 +64,16 @@ export default function HomePage({ questions, news }) {
   }, [locale]);
 
   const handleTransition = () => {
-    const path = servicesArray.find(
-      el =>
-        el[0].includes(filterValue.serviceType) &&
-        el[0].includes(filterValue.service)
-    )[2];
-    router.push(`/services/${path}`);
+    if (filterValue.serviceType !== t('services.requests')) {
+      const path = servicesArray.find(
+        el =>
+          el[0].includes(filterValue.serviceType) &&
+          el[0].includes(filterValue.service)
+      )[2];
+      router.push(`/services/${path}`);
+    } else {
+      router.push(`/services/requests`);
+    }
   };
 
   return (
@@ -137,14 +143,25 @@ export default function HomePage({ questions, news }) {
               <div className={styles.banner__label__title}>
                 {t('homePage.banner.label_title1')}
               </div>
-              <BannerDropdown
-                title={t('homePage.banner.bannerDropdown.title1')}
-                values={valuesService}
-                dropdownValue={filterValue.service}
-                setDropdownValue={e =>
-                  setFilterValue({ ...filterValue, service: e })
-                }
-              />
+              {valuesServiceType !== t('services.requests') ? (
+                <BannerDropdown
+                  title={t('homePage.banner.bannerDropdown.title1')}
+                  values={valuesService}
+                  dropdownValue={filterValue.service}
+                  setDropdownValue={e =>
+                    setFilterValue({ ...filterValue, service: e })
+                  }
+                />
+              ) : (
+                <BannerDropdown
+                  title={t('homePage.banner.bannerDropdown.title1')}
+                  values={t('services.requests')}
+                  // dropdownValue={filterValue.service}
+                  // setDropdownValue={e =>
+                  //   setFilterValue({ ...filterValue, service: e })
+                  // }
+                />
+              )}
             </div>
             <div className={`${styles.banner__label} onDesktop`}>
               <div

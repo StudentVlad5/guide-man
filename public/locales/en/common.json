@@ -28,6 +28,7 @@
 
   "navbar": {
     "services": "Services",
+    "requests": "Requests",
     "chat": "Global chat",
     "about": "About GGS",
     "news": "News",
@@ -90,6 +91,17 @@
     "requests": "Lawyer's requests",
 
     "allServices": "All services"
+  },
+
+  "requests": {
+    "civilRegistryOffices": "Requests to the Civil Registry Offices (registration of civil status acts)",
+    "ministryOfInternalAffairs": "Requests to the Ministry of Internal Affairs of Ukraine (MIA)",
+    "internallyDisplacedPersons": "Requests related to internally displaced persons (IDPs)",
+    "pensionFund": "Requests to the Pension Fund of Ukraine (PFU) and the State Border Guard Service of Ukraine (SBGS)",
+    "ministryOfDefense": "Requests to the Ministry of Defense of Ukraine and Territorial Recruitment Centers (TRCs)",
+    "stateMigrationService": "Requests to the State Migration Service of Ukraine (SMSU) and the Administration of SBGS",
+
+    "allRequests": "All requests"
   },
 
   "citizenship": {
