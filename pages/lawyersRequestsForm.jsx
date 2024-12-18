@@ -1,53 +1,54 @@
-'use client';
-import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
-import axios from 'axios';
+"use client";
+import dynamic from "next/dynamic";
+import React, { useState } from "react";
+import axios from "axios";
+import { handleDocuSign } from "./api/send-dpf-signin";
 
 // Динамічне підключення PDF-компонента
-const LawyersRequest = dynamic(() => import('../components/DownloadPDF'), {
+const LawyersRequest = dynamic(() => import("../components/DownloadPDF"), {
   ssr: false,
 });
 
 export default function DownloadPage() {
   const [formData, setFormData] = useState({
-    name: 'ПІБ',
-    email: 'example@example.com',
+    name: "ПІБ",
+    email: "example@example.com",
     dateCreating: new Date()
       // .toISOString()
       // .slice(0, 10)
       // .split('-')
       // .reverse()
       // .join('.'),
-      .toLocaleDateString('ru-RU', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
+      .toLocaleDateString("ru-RU", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
       }),
-    date: { start: '', finish: '' },
+    date: { start: "", finish: "" },
     requests: 1,
-    order: '',
-    license: '',
-    docs: '',
+    order: "",
+    license: "",
+    docs: "",
     recipient: {
-      name: 'Держ орган',
-      address: 'повна адреса органу',
+      name: "Держ орган",
+      address: "повна адреса органу",
     },
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleRecipientChange = e => {
+  const handleRecipientChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       recipient: { ...prev.recipient, [name]: value },
     }));
@@ -59,17 +60,17 @@ export default function DownloadPage() {
     console.log(formData);
 
     try {
-      const response = await axios.post('/api/save-pdf', formData);
+      const response = await axios.post("/api/save-pdf", formData);
       console.log(response.data);
       if (response.data.fileUrl) {
         setDownloadLink(response.data.fileUrl);
       } else {
-        throw new Error('Відсутній URL файлу.');
+        throw new Error("Відсутній URL файлу.");
       }
     } catch (error) {
-      console.error('Помилка збереження PDF:', error);
-      alert('Не вдалося зберегти PDF. Перевірте дані.');
-      setError('Не вдалося зберегти PDF. Перевірте дані.');
+      console.error("Помилка збереження PDF:", error);
+      alert("Не вдалося зберегти PDF. Перевірте дані.");
+      setError("Не вдалося зберегти PDF. Перевірте дані.");
     } finally {
       setIsLoading(false);
     }
@@ -101,8 +102,8 @@ export default function DownloadPage() {
           name="start"
           type="date"
           value={formData.date.start}
-          onChange={e =>
-            setFormData(prev => ({
+          onChange={(e) =>
+            setFormData((prev) => ({
               ...prev,
               date: { ...prev.date, start: e.target.value },
             }))
@@ -115,8 +116,8 @@ export default function DownloadPage() {
           name="finish"
           type="date"
           value={formData.date.finish}
-          onChange={e =>
-            setFormData(prev => ({
+          onChange={(e) =>
+            setFormData((prev) => ({
               ...prev,
               date: { ...prev.date, finish: e.target.value },
             }))
@@ -170,9 +171,9 @@ export default function DownloadPage() {
         />
       </div>
       <button onClick={generateAndSavePDF} disabled={isLoading}>
-        {isLoading ? 'Зберігається...' : 'Зберегти PDF'}
+        {isLoading ? "Зберігається..." : "Зберегти PDF"}
       </button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {downloadLink && (
         <div>
           <p>Ваш файл готовий:</p>
@@ -181,6 +182,20 @@ export default function DownloadPage() {
           </a>
         </div>
       )}
+      <button
+        onClick={() =>
+          handleDocuSign(
+            downloadLink,
+            formData.docs,
+            formData.name,
+            formData.email,
+            "vlad_np@ukr.net",
+            "Vlad"
+          )
+        }
+      >
+        SignIn document
+      </button>
     </div>
   );
 }
