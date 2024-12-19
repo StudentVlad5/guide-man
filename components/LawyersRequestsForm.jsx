@@ -26,7 +26,7 @@ export default function LawyersRequestForm({ currentLanguage }) {
 
   const [formData, setFormData] = useState({
     name: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
-    surnamme: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
+    surname: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
     fatherName: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
     email: 'example@example.com', //????
     birthday: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП
@@ -181,6 +181,22 @@ export default function LawyersRequestForm({ currentLanguage }) {
               </select>
             </div>
           </label>
+          <label className={styles.orderForm__form_lable}>
+            <span className={styles.orderForm__form_span}>
+              Прізвище:{' '}
+              <span className={styles.orderForm__form_required}>*</span>
+            </span>
+            <input
+              className={styles.orderForm__form_input}
+              placeholder="Іванов Іван Іванович"
+              type="text"
+              id="surname"
+              name="surname"
+              value={formData.surname}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
@@ -193,23 +209,6 @@ export default function LawyersRequestForm({ currentLanguage }) {
               id="name"
               name="name"
               value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Прізвище:{' '}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="surnamme"
-              name="surnamme"
-              value={formData.surnamme}
               onChange={handleChange}
               required
             />
