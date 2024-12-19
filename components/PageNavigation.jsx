@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next';
 
 import { useRouter } from 'next/router';
 
-import styles from '../styles/pageNavigation.module.scss'; 
+import styles from '../styles/pageNavigation.module.scss';
 
 export const PageNavigation = ({ title }) => {
   const { pathname, query } = useRouter();
-  const { t }  = useTranslation();
+  const { t } = useTranslation();
 
   const pathnames = pathname.split('/').filter(el => el);
 
@@ -15,7 +15,7 @@ export const PageNavigation = ({ title }) => {
     <ul className={styles.pageNavigation}>
       <li>
         <Link href="/">
-          <p>{t(t('pageNavigation.main'))}</p> 
+          <p>{t(t('pageNavigation.main'))}</p>
         </Link>
       </li>
 
@@ -24,47 +24,52 @@ export const PageNavigation = ({ title }) => {
         const isLast = index === pathnames.length - 1;
         const currentLocation = () => {
           switch (el) {
-          case 'services':
-            return t('navbar.services');
+            case 'services':
+              return t('navbar.services');
 
-          case 'chat':
-            return t('navbar.chat');
+            case 'requests':
+              return t('navbar.requests');
 
-          case 'news':
-            return t('navbar.news');
+            case 'chat':
+              return t('navbar.chat');
 
-          case 'about':
-            return t('navbar.about');
+            case 'news':
+              return t('navbar.news');
 
-          case  'explanations':
-            return t('navbar.explanations');
+            case 'about':
+              return t('navbar.about');
 
-          case 'citizenship':
-            return t('citizenship.button');
+            case 'explanations':
+              return t('navbar.explanations');
 
-          case 'sitemap':
-            return t('pageNavigation.sitemap');
+            case 'citizenship':
+              return t('citizenship.button');
 
-          default:
-            return ;
+            case 'sitemap':
+              return t('pageNavigation.sitemap');
+
+            default:
+              return;
           }
         };
         return isLast ? (
           <li key={pathname + index}>
             <p>{' / '}</p>
             <p className={styles.pageNavigation__navigation}>
-              {Object.values(query).length !== 0 ? `${title}` : `${currentLocation()}`}
+              {Object.values(query).length !== 0
+                ? `${title}`
+                : `${currentLocation()}`}
             </p>
           </li>
-        ) : (currentLocation() ? (
-           <li key={pathname + index}>
+        ) : currentLocation() ? (
+          <li key={pathname + index}>
             <p>
-              <Link  href={routeTo}>
-                {`/ ${currentLocation()}`}
-              </Link>
+              <Link href={routeTo}>{`/ ${currentLocation()}`}</Link>
             </p>
-          </li> 
-        ) : <></>);
+          </li>
+        ) : (
+          <></>
+        );
       })}
     </ul>
   );

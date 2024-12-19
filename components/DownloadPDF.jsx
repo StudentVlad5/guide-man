@@ -15,10 +15,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'white',
-    padding: 50,
+    paddingVertical: 50,
+    paddingLeft: 100,
+    paddingRight: 50,
     fontFamily: 'Roboto',
     fontSize: 14,
-    lineHeight: 1.5,
+    lineHeight: 1.3,
     fontStyle: 'normal',
   },
   header: {
@@ -32,6 +34,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     marginBottom: 10,
+    paddingBottom: 10,
     fontSize: 16,
     textTransform: 'uppercase',
     textAlign: 'center',
@@ -99,6 +102,7 @@ const styles = StyleSheet.create({
   apps: {
     display: 'flex',
     flexDirection: 'row',
+    gap: 5,
     marginTop: 50,
     paddingLeft: 60,
     paddingRight: 40,
@@ -226,6 +230,9 @@ export const LawyersRequest = ({ data }) => {
                         2).
                     </Text> */}
         </View>
+
+        <View style={styles.section}>{request.ua.text || ''}</View>
+
         <View style={styles.section}>
           <Text style={styles.text}>
             Прошу надати зазначені документи та інформацію у вигляді засвідчених
@@ -253,7 +260,7 @@ export const LawyersRequest = ({ data }) => {
                     </Text> */}
         </View>
         <View style={styles.apps}>
-          <Text style={styles.italic}>Додаток: </Text>
+          <Text style={styles.italic}>Додаток:{'   '} </Text>
           <View style={styles.list}>
             <Text style={styles.italic}>- копія ордеру </Text>
             <Text style={styles.italic}>

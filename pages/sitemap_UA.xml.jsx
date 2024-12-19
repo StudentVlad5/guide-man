@@ -15,6 +15,7 @@ export const getServerSideProps = async ({ res }) => {
     [`${BASE_URL}/`, 'index'],
     [`${BASE_URL}/news`, 'news'],
     [`${BASE_URL}/services`, 'services'],
+    [`${BASE_URL}/services/requests`, 'requests'],
   ];
 
   const news = await getCollection('news');
@@ -68,6 +69,14 @@ export const getServerSideProps = async ({ res }) => {
 
           case 'services':
             return services
+              .map(el => el.dateCreating)
+              .sort((a, b) => b - a)[0]
+              .split(' ')
+              .slice(0, 1)
+              .join('');
+
+          case 'requests':
+            return requests
               .map(el => el.dateCreating)
               .sort((a, b) => b - a)[0]
               .split(' ')

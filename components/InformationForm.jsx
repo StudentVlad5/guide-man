@@ -606,12 +606,11 @@ export const InformationForm = ({
                 </p>
               )}
 
-            {(type === 'requests' || type === 'citizenship') &&
-              func === 'updateInfo' && (
-                <p className={styles.requestType}>
-                  {`${currentInfoItem.requestType.ua}:`}{' '}
-                </p>
-              )}
+            {type === 'requests' && func === 'updateInfo' && (
+              <p className={styles.requestType}>
+                {`${currentInfoItem.requestType.ua}:`}{' '}
+              </p>
+            )}
 
             <input
               type="text"
@@ -701,12 +700,11 @@ export const InformationForm = ({
                 </p>
               )}
 
-            {(type === 'requests' || type === 'citizenship') &&
-              func === 'updateInfo' && (
-                <p className={styles.requestType}>
-                  {`${currentInfoItem.requestType.en}:`}{' '}
-                </p>
-              )}
+            {type === 'requests' && func === 'updateInfo' && (
+              <p className={styles.requestType}>
+                {`${currentInfoItem.requestType.en}:`}{' '}
+              </p>
+            )}
 
             <input
               type="text"
@@ -793,12 +791,11 @@ export const InformationForm = ({
                   {`${currentInfoItem.serviceType.ru}:`}{' '}
                 </p>
               )}
-            {(type === 'requests' || type === 'citizenship') &&
-              func === 'updateInfo' && (
-                <p className={styles.requestType}>
-                  {`${currentInfoItem.requestType.ru}:`}{' '}
-                </p>
-              )}
+            {type === 'requests' && func === 'updateInfo' && (
+              <p className={styles.requestType}>
+                {`${currentInfoItem.requestType.ru}:`}{' '}
+              </p>
+            )}
 
             <input
               type="text"

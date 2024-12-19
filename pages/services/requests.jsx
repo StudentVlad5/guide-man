@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { PageNavigation } from '../components/PageNavigation';
+import { PageNavigation } from '../../components/PageNavigation';
 
-import { ServisesDropdown } from '../components/ServisesDropdown';
-import { ServisesButton } from '../components/ServisesButton';
-import { getRightData, getRightURL } from '../helpers/rightData';
+import { ServisesDropdown } from '../../components/ServisesDropdown';
+import { ServisesButton } from '../../components/ServisesButton';
+import { getRightData, getRightURL } from '../../helpers/rightData';
 
-import requestsDescription from '../api/requestsDescription.json';
+import requestsDescription from '../../api/requestsDescription.json';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { Layout } from '../components/Layout';
+import { Layout } from '../../components/Layout';
 
-import Menu from '../public/menu.svg';
-import Ukr from '../public/ukr.svg';
-import Earth from '../public/earth.svg';
-import Doc from '../public/doc.svg';
+import Menu from '../../public/menu.svg';
+import Doc from '../../public/doc.svg';
 
-import styles from '../styles/servicesPage.module.scss';
-import { getCollection } from '../helpers/firebaseControl';
+import styles from '../../styles/servicesPage.module.scss';
+import stylesDesc from '../../styles/itemPage.module.scss';
+import { getCollection } from '../../helpers/firebaseControl';
 
-import { BASE_URL } from './sitemap.xml';
+import { BASE_URL } from '../sitemap.xml';
 
 export default function LawyersRequests({ requests }) {
   console.log('LawyersRequests ~ requests:', requests);
@@ -73,11 +72,6 @@ export default function LawyersRequests({ requests }) {
     setIsAllButtons(!isAllButtons);
   };
 
-  const changeFilter = title => {
-    setFilter(title);
-    openAllButtons();
-  };
-
   useEffect(() => {
     setFilter(t('requests.allRequests'));
   }, [t]);
@@ -85,8 +79,8 @@ export default function LawyersRequests({ requests }) {
   return (
     <Layout
       type="requests page"
-      desctiption={`⭐${t('requests.button')}⭐ ${t('head.home.description')}`}
-      h1={t('requests.button')}
+      desctiption={`⭐${t('navbar.services')}⭐ ${t('head.home.description')}`}
+      h1={t('navbar.services')}
       script={`[
         {
             "@context": "http://schema.org",
@@ -108,7 +102,16 @@ export default function LawyersRequests({ requests }) {
                   "item":
                   {
                     "@id": "${getRightURL(locale, pathname)}",
-                    "name": "${t('requests.button')}"
+                    "name": "${t('navbar.services')}"
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "item":
+                  {
+                    "@id": "${getRightURL(locale, pathname)}",
+                    "name": "${t('navbar.requests')}"
                   }
                 }
               ]
@@ -117,16 +120,14 @@ export default function LawyersRequests({ requests }) {
             "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [
-              ${requests
-                // .filter(el => el.id !== '147406030952')
-                .map(el => {
-                  return `{
+              ${requests.map(el => {
+                return `{
               "@type": "Question",
               "name": "${el.requestType[locale]}: ${getRightData(
-                    el,
-                    locale,
-                    'title'
-                  )}",
+                  el,
+                  locale,
+                  'title'
+                )}",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "${
@@ -134,7 +135,7 @@ export default function LawyersRequests({ requests }) {
                 }"
               }
             }`;
-                })}
+              })}
              ]
           }
         ]`}
@@ -152,50 +153,6 @@ export default function LawyersRequests({ requests }) {
                 title={filter}
                 onClick={openAllButtons}
               />
-              {/* {isAllButtons && filter === t('requests.allRequests') && (
-                <>
-                  <ServisesButton
-                    Img={Ukr}
-                    title={t('requests.citizens')}
-                    onClick={() => changeFilter(t('requests.citizens'))}
-                  />
-                  <ServisesButton
-                    Img={Earth}
-                    title={t('requests.foreigners')}
-                    onClick={() => changeFilter(t('requests.foreigners'))}
-                  />
-                </>
-              )}
-
-              {isAllButtons && filter === t('requests.foreigners') && (
-                <>
-                  <ServisesButton
-                    Img={Ukr}
-                    title={t('services.citizens')}
-                    onClick={() => changeFilter(t('requests.citizens'))}
-                  />
-                  <ServisesButton
-                    Img={Menu}
-                    title={t('requests.allRequests')}
-                    onClick={() => changeFilter(t('requests.allRequests'))}
-                  />
-                </>
-              )}
-
-              {isAllButtons && filter === t('requests.citizens') && (
-                <>
-                  <ServisesButton
-                    Img={Earth}
-                    title={t('requests.foreigners')}
-                    onClick={() => changeFilter(t('requests.foreigners'))}
-                  />
-                  <ServisesButton
-                    Img={Menu}
-                    title={t('requests.allRequests')}
-                    onClick={() => changeFilter(t('requests.allRequests'))}
-                  />
-                </>
-              )} */}
             </div>
 
             <div className={styles.servisesPage__section}>
@@ -211,31 +168,25 @@ export default function LawyersRequests({ requests }) {
                 values={ministryOfInternalAffairs}
               />
 
-              {/* {filter !== t('requests.citizens') && ( */}
               <ServisesDropdown
                 Img={Doc}
                 title={t('requests.internallyDisplacedPersons')}
                 values={internallyDisplacedPersons}
               />
-              {/* )} */}
 
-              {/* {filter !== t('requests.citizens') && ( */}
               <ServisesDropdown
                 Img={Doc}
                 title={t('requests.pensionFund')}
                 values={pensionFund}
               />
-              {/* )} */}
             </div>
 
             <div className={styles.servisesPage__section}>
-              {/* {filter !== t('requests.citizens') && ( */}
               <ServisesDropdown
                 Img={Doc}
                 title={t('requests.ministryOfDefense')}
                 values={ministryOfDefense}
               />
-              {/* )} */}
 
               <ServisesDropdown
                 Img={Doc}
@@ -245,16 +196,18 @@ export default function LawyersRequests({ requests }) {
             </div>
           </div>
 
-          <div className={styles.ItemPage}>
-            <h1 className={`page__title ${styles.itemPage__title}`}>
-              {getRightData(requestsDescription, locale, 'title')}
-            </h1>
-            <article
-              className={styles.itemPage__text}
-              dangerouslySetInnerHTML={{
-                __html: getRightData(requestsDescription, locale, 'text'),
-              }}
-            />
+          <div style={{ marginTop: 50 }}>
+            <div className={stylesDesc.ItemPage}>
+              <h1 className={`page__title ${stylesDesc.itemPage__title}`}>
+                {getRightData(requestsDescription, locale, 'title')}
+              </h1>
+              <article
+                className={stylesDesc.itemPage__text}
+                dangerouslySetInnerHTML={{
+                  __html: getRightData(requestsDescription, locale, 'text'),
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

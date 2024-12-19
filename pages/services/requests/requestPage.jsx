@@ -1,55 +1,56 @@
-import Link from "next/link";
-import PropTypes from "prop-types";
-import { getRightData } from "../helpers/rightData";
-import { useRouter } from "next/router";
+import Link from 'next/link';
+import PropTypes from 'prop-types';
+import { getRightData } from '../../../helpers/rightData';
+import { useRouter } from 'next/router';
 
-import styles from "../styles/itemPage.module.scss";
-import { ButtonUp } from "./ButtonUp";
-import { useTranslation } from "next-i18next";
+import styles from '../../../styles/itemPage.module.scss';
+import { ButtonUp } from '../../../components/ButtonUp';
+import { useTranslation } from 'next-i18next';
 
-import { QRCode } from "react-qrcode-logo";
-import { useState } from "react";
-import DownloadPage from "../pages/lawyersRequestsForm";
+import { QRCode } from 'react-qrcode-logo';
+import { useState } from 'react';
+import LawyersRequestForm from '../../../components/lawyersRequestsForm';
 
-export const LawyersRequestPage = ({ item, buttonName, linkPath }) => {
+export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
   const [isActiveForm, setIsActiveForm] = useState(false);
 
   const handleOpenForm = () => {
-    setIsActiveForm((prevState) => !prevState);
+    setIsActiveForm(prevState => !prevState);
   };
 
   const isCalc =
-    item.id === "735806203922" ||
-    item.idPost === "Uvpy4KwwbWAO9b9QF6iX" ||
-    item.path === "monitorynh-bezvizovyi- kalkuliator";
+    item.id === '1' ||
+    item.idPost === '2JyNW924Bk8H52N6WVAP' ||
+    item.path ===
+      'request-to-provide-copies-of-protocols-and-documents-signed-by-the-driver';
   const isCalcInfoArr = [
-    "services.helpConnect",
-    "services.helpControl",
-    "services.countDays",
-    "services.monitoringDocument",
-    "services.monitoringData",
+    'requests.civilRegistryOffices',
+    'requests.ministryOfInternalAffairs',
+    'requests.internallyDisplacedPersons',
+    'requests.pensionFund',
+    'requests.ministryOfDefense',
+    'requests.stateMigrationService',
   ];
 
   return (
     <div className={styles.itemPage}>
-
       <div className={styles.itemPage__body}>
         <h1 className={`page__title ${styles.itemPage__title}`}>
-          {item.type === "services"
-            ? `${item.serviceType[locale]}: ${getRightData(
+          {item.type === 'requests'
+            ? `${item.requestType[locale]}: ${getRightData(
                 item,
                 locale,
-                "title"
+                'title'
               )}`
-            : getRightData(item, locale, "title")}
+            : getRightData(item, locale, 'title')}
         </h1>
         {!isCalc && (
           <article
             className={styles.itemPage__text}
             dangerouslySetInnerHTML={{
-              __html: getRightData(item, locale, "text"),
+              __html: getRightData(item, locale, 'preview'),
             }}
           />
         )}
@@ -79,18 +80,16 @@ export const LawyersRequestPage = ({ item, buttonName, linkPath }) => {
             type="button"
             onClick={handleOpenForm}
             className={`${styles.buttonDiv__button} ${
-              isActiveForm ? styles.buttonDiv__button_active : ""
+              isActiveForm ? styles.buttonDiv__button_active : ''
             }`}
           >
             {isActiveForm ? (
               <span className={styles.buttonDiv__button_text}>Закрити</span>
             ) : (
-              <span className={styles.buttonDiv__button_text}>
-                Замовити
-              </span>
+              <span className={styles.buttonDiv__button_text}>Замовити</span>
             )}
           </button>
-          {isActiveForm && <DownloadPage currentLanguage={locale} />}
+          {isActiveForm && <LawyersRequestForm currentLanguage={locale} />}
         </div>
 
         <button className="button-extension button-extension--down">
@@ -102,9 +101,9 @@ export const LawyersRequestPage = ({ item, buttonName, linkPath }) => {
       <ButtonUp />
     </div>
   );
-};
+}
 
-ItemPage.propType = {
+LawyersRequestPage.propType = {
   item: PropTypes.object.isRequired,
   buttonName: PropTypes.string,
   linkPath: PropTypes.string,
