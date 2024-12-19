@@ -67,7 +67,7 @@ export default function LawyersRequestForm({ currentLanguage }) {
     eventPlace: '', //ГУНП
     ipn: '', //ПФУ і ДПСУ
     propertyAddress: '', //ВПО
-    // uid: user?.uid || '',
+    uid: user?.uid || '',
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
