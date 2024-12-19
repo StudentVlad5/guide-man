@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const getValue = (value, fallback = 'Не вказано') => value || fallback;
+const getValue = (value, fallback = '') => value || fallback;
 
 export const LawyersRequest = ({ data }) => {
   return (

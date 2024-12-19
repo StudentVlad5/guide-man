@@ -8,7 +8,7 @@ import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import styles from '../styles/servisesDropdown.module.scss';
 
 export const ServisesDropdown = ({ title, Img, values }) => {
-  console.log('ServisesDropdown ~ values:', values);
+  // console.log('ServisesDropdown ~ values:', values);
   const [isOpen, setIsOpen] = useState(false);
 
   const refServisesDrop = useRef();

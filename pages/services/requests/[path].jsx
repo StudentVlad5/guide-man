@@ -111,7 +111,7 @@ export default function RequestItemPage({ requestItem }) {
           <LawyersRequestPage
             buttonName={t('requests.allRequests')}
             item={requestItem[0]}
-            linkPath="/requests"
+            linkPath="/services/requests"
           />
         </div>
       </div>

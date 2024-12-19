@@ -1,8 +1,8 @@
 'use client';
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-
+import { AppContext } from './AppProvider';
 import styles from '../styles/lawyersRequestForm.module.scss';
 
 import countries from 'i18n-iso-countries';
@@ -22,6 +22,7 @@ const LawyersRequest = dynamic(() => import('./DownloadPDF'), {
 export default function LawyersRequestForm({ currentLanguage }) {
   // const language = currentLanguage === "ua" ? "uk" : currentLanguage;
   const language = ukLocale;
+  const { user } = useContext(AppContext);
 
   const [formData, setFormData] = useState({
     name: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
@@ -66,6 +67,7 @@ export default function LawyersRequestForm({ currentLanguage }) {
     eventPlace: '', //ГУНП
     ipn: '', //ПФУ і ДПСУ
     propertyAddress: '', //ВПО
+    // uid: user?.uid || '',
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
