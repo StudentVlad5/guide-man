@@ -106,6 +106,7 @@ export default async function handler(req, res) {
       res.status(200).json({
         message: 'PDF saved successfully!',
         request: newRequest,
+        fileUrl: `data:application/pdf;base64,${pdfBase64}`,
       });
 
       // pdfStream.on('error', err => {

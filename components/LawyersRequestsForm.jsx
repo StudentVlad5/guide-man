@@ -113,12 +113,12 @@ export default function LawyersRequestForm({ currentLanguage }) {
       if (response.data.fileUrl) {
         setDownloadLink(response.data.fileUrl);
       } else {
-        throw new Error('Відсутній URL файлу.');
+        throw new Error('The file URL is missing');
       }
     } catch (error) {
-      console.error('Помилка збереження PDF:', error);
-      alert('Не вдалося зберегти PDF. Перевірте дані.');
-      setError('Не вдалося зберегти PDF. Перевірте дані.');
+      console.error('Error saving PDF:', error);
+      alert('Failed to save PDF. Verify the data.');
+      setError('Failed to save PDF. Verify the data.');
     } finally {
       setIsLoading(false);
     }
