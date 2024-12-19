@@ -7,7 +7,7 @@ import styles from '../../../styles/itemPage.module.scss';
 import { ButtonUp } from '../../../components/ButtonUp';
 import { useTranslation } from 'next-i18next';
 
-import { QRCode } from 'react-qrcode-logo';
+// import { QRCode } from 'react-qrcode-logo';
 import { useState } from 'react';
 import LawyersRequestForm from '../../../components/lawyersRequestsForm';
 
@@ -63,7 +63,7 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
                 ))}
               </ul>
             </div>
-            <div className={styles.itemPage__iconsWrap}>
+            {/* <div className={styles.itemPage__iconsWrap}>
               <a href="https://t.me/emigrant_helper_bot" alt="">
                 <QRCode
                   value="https://t.me/emigrant_helper_bot"
@@ -71,7 +71,7 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
                   size={200}
                 />
               </a>
-            </div>
+            </div> */}
           </>
         )}
 
