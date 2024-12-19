@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next';
 
 import { QRCode } from 'react-qrcode-logo';
 import { useState } from 'react';
-import LawyersRequestForm from '../../../components/lawyersRequestsForm';
+import LawyersRequestForm from '../../../components/LawyersRequestsForm';
 
 export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const { locale } = useRouter();
@@ -19,20 +19,6 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const handleOpenForm = () => {
     setIsActiveForm(prevState => !prevState);
   };
-
-  const isCalc =
-    item.id === '1' ||
-    item.idPost === '2JyNW924Bk8H52N6WVAP' ||
-    item.path ===
-      'request-to-provide-copies-of-protocols-and-documents-signed-by-the-driver';
-  const isCalcInfoArr = [
-    'requests.civilRegistryOffices',
-    'requests.ministryOfInternalAffairs',
-    'requests.internallyDisplacedPersons',
-    'requests.pensionFund',
-    'requests.ministryOfDefense',
-    'requests.stateMigrationService',
-  ];
 
   return (
     <div className={styles.itemPage}>
@@ -46,34 +32,22 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
               )}`
             : getRightData(item, locale, 'title')}
         </h1>
-        {!isCalc && (
-          <article
-            className={styles.itemPage__text}
-            dangerouslySetInnerHTML={{
-              __html: getRightData(item, locale, 'preview'),
-            }}
-          />
-        )}
-        {isCalc && (
-          <>
-            <div className={styles.itemPage__text}>
-              <ul>
-                {isCalcInfoArr.map((item, index) => (
-                  <li key={index}>{t(item)}</li>
-                ))}
-              </ul>
-            </div>
-            <div className={styles.itemPage__iconsWrap}>
-              <a href="https://t.me/emigrant_helper_bot" alt="">
-                <QRCode
-                  value="https://t.me/emigrant_helper_bot"
-                  logoImage="../telegram-icon.svg"
-                  size={200}
-                />
-              </a>
-            </div>
-          </>
-        )}
+        <article
+          className={styles.itemPage__text}
+          dangerouslySetInnerHTML={{
+            __html: getRightData(item, locale, 'preview'),
+          }}
+        />
+
+        <div className={styles.itemPage__iconsWrap}>
+          <a href="https://t.me/emigrant_helper_bot" alt="">
+            <QRCode
+              value="https://t.me/emigrant_helper_bot"
+              logoImage="../telegram-icon.svg"
+              size={200}
+            />
+          </a>
+        </div>
 
         <div className={styles.buttonDiv}>
           <button
@@ -89,7 +63,11 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
               <span className={styles.buttonDiv__button_text}>Замовити</span>
             )}
           </button>
-          {isActiveForm && <LawyersRequestForm currentLanguage={locale} />}
+          {isActiveForm && (
+            <div style={{ marginTop: 60 }}>
+              <LawyersRequestForm currentLanguage={locale} />
+            </div>
+          )}
         </div>
 
         <button className="button-extension button-extension--down">

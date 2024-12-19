@@ -303,3 +303,24 @@ export function createNewPost(postInfo, file, type, serviceType) {
       });
   });
 }
+
+export const saveRequestToFirestore = async (db, uid, data, pdfBase64) => {
+  const userRef = doc(db, 'users', uid);
+  console.log('saveRequestToFirestore ~ userRef:', userRef);
+
+  // Формуємо новий запит
+  const newRequest = {
+    id: Math.floor(Date.now() * Math.random()).toString(),
+    dateCreating: data.dateCreating || format(new Date(), 'yyyy-MM-dd HH:mm'),
+    title: data.title || 'Запит',
+    pdfDoc: pdfBase64,
+    numberOrder: data.numberOrder || '',
+  };
+
+  // Оновлюємо поле `requests` користувача
+  await updateDoc(userRef, {
+    requests: arrayUnion(newRequest),
+  });
+
+  return newRequest;
+};
