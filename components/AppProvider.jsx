@@ -26,7 +26,7 @@ export const AppProvider = ({ children }) => {
   const [servicesArray, setServicesArray] = useState([]);
   const [requestsArray, setRequestsArray] = useState([]);
 
-  console.log(user);
+  console.log(user?.uid);
 
   const router = useRouter();
 

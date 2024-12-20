@@ -1,8 +1,8 @@
 'use client';
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-
+import { AppContext } from './AppProvider';
 import styles from '../styles/lawyersRequestForm.module.scss';
 
 import countries from 'i18n-iso-countries';
@@ -22,10 +22,11 @@ const LawyersRequest = dynamic(() => import('./DownloadPDF'), {
 export default function LawyersRequestForm({ currentLanguage }) {
   // const language = currentLanguage === "ua" ? "uk" : currentLanguage;
   const language = ukLocale;
+  const { user } = useContext(AppContext);
 
   const [formData, setFormData] = useState({
     name: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
-    surnamme: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
+    surname: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
     fatherName: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
     email: 'example@example.com', //????
     birthday: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП
@@ -66,6 +67,7 @@ export default function LawyersRequestForm({ currentLanguage }) {
     eventPlace: '', //ГУНП
     ipn: '', //ПФУ і ДПСУ
     propertyAddress: '', //ВПО
+    uid: user?.uid || '',
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,12 +113,12 @@ export default function LawyersRequestForm({ currentLanguage }) {
       if (response.data.fileUrl) {
         setDownloadLink(response.data.fileUrl);
       } else {
-        throw new Error('Відсутній URL файлу.');
+        throw new Error('The file URL is missing');
       }
     } catch (error) {
-      console.error('Помилка збереження PDF:', error);
-      alert('Не вдалося зберегти PDF. Перевірте дані.');
-      setError('Не вдалося зберегти PDF. Перевірте дані.');
+      console.error('Error saving PDF:', error);
+      alert('Failed to save PDF. Verify the data.');
+      setError('Failed to save PDF. Verify the data.');
     } finally {
       setIsLoading(false);
     }
@@ -179,6 +181,22 @@ export default function LawyersRequestForm({ currentLanguage }) {
               </select>
             </div>
           </label>
+          <label className={styles.orderForm__form_lable}>
+            <span className={styles.orderForm__form_span}>
+              Прізвище:{' '}
+              <span className={styles.orderForm__form_required}>*</span>
+            </span>
+            <input
+              className={styles.orderForm__form_input}
+              placeholder="Іванов Іван Іванович"
+              type="text"
+              id="surname"
+              name="surname"
+              value={formData.surname}
+              onChange={handleChange}
+              required
+            />
+          </label>
 
           <label className={styles.orderForm__form_lable}>
             <span className={styles.orderForm__form_span}>
@@ -191,23 +209,6 @@ export default function LawyersRequestForm({ currentLanguage }) {
               id="name"
               name="name"
               value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Прізвище:{' '}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="surnamme"
-              name="surnamme"
-              value={formData.surnamme}
               onChange={handleChange}
               required
             />

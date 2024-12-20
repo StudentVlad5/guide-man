@@ -4,6 +4,7 @@ import { app, realTimeDb } from '../firebase';
 import { db } from '../firebase';
 import { storage } from '../firebase';
 import { ref, deleteObject } from 'firebase/storage';
+import { doc, setDoc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
 
 export const auth = getAuth(app);
 
@@ -303,3 +304,40 @@ export function createNewPost(postInfo, file, type, serviceType) {
       });
   });
 }
+
+export const saveRequestToFirestore = async (db, uid, data, pdfBase64) => {
+  const userRef = doc(db, 'users', uid);
+  console.log('saveRequestToFirestore ~ userRef:', userRef);
+
+  // Перевіряємо, чи існує документ
+  const docSnapshot = await getDoc(userRef);
+  if (!docSnapshot.exists()) {
+    // Створюємо документ, якщо його немає
+    await setDoc(userRef, {
+      requests: [], // Створюємо пустий масив для `requests`
+      email: data.email || '',
+      name: {
+        surname: data.surname || '',
+        name: data.name || '',
+        fatherName: data.fatherName || '',
+      },
+      dateCreating: format(new Date(), 'yyyy-MM-dd HH:mm'),
+    });
+  }
+
+  // Формуємо новий запит
+  const newRequest = {
+    id: Math.floor(Date.now() * Math.random()).toString(),
+    dateCreating: data.dateCreating || format(new Date(), 'yyyy-MM-dd HH:mm'),
+    title: data.title || 'Запит',
+    pdfDoc: pdfBase64,
+    numberOrder: data.numberOrder || '',
+  };
+
+  // Оновлюємо поле `requests` користувача
+  await updateDoc(userRef, {
+    requests: arrayUnion(newRequest),
+  });
+
+  return newRequest;
+};

@@ -23,9 +23,7 @@ import { AppContext } from '../components/AppProvider';
 
 export default function HomePage({ questions, news }) {
   const { servicesArray } = useContext(AppContext);
-  console.log('HomePage ~ servicesArray:', servicesArray);
   const { requestsArray } = useContext(AppContext);
-  console.log('HomePage ~ requestsArray:', requestsArray);
 
   const [filterValue, setFilterValue] = useState({
     serviceType: '',
@@ -36,8 +34,6 @@ export default function HomePage({ questions, news }) {
   const { locale } = useRouter();
 
   const router = useRouter();
-
-  console.log(filterValue);
 
   const valuesServiceType = [
     t('services.borderControl'),

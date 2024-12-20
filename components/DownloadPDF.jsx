@@ -126,7 +126,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const getValue = (value, fallback = 'Не вказано') => value || fallback;
+const getValue = (value, fallback = '') => value || fallback;
+const PIB = value =>
+  [value?.surname, value?.name, value?.fatherName || ''].join(' ');
+console.log('PIB:', PIB);
 
 export const LawyersRequest = ({ data }) => {
   return (
@@ -231,7 +234,7 @@ export const LawyersRequest = ({ data }) => {
                     </Text> */}
         </View>
 
-        <View style={styles.section}>{request.ua.text || ''}</View>
+        {/* <View style={styles.section}>{request?.ua.text || ''}</View> */}
 
         <View style={styles.section}>
           <Text style={styles.text}>
@@ -240,9 +243,8 @@ export const LawyersRequest = ({ data }) => {
             <Text style={styles.boldItalic}>pcentr27@gmail.com.</Text>
           </Text>
           <Text style={styles.text}>
-            Даний запит подається в інтересах {getValue(data.name)}, з його
-            згодою на збір та обробку персональних даних відповідно до
-            законодавства України.
+            Даний запит подається в інтересах {PIB(data)}, з його згодою на збір
+            та обробку персональних даних відповідно до законодавства України.
           </Text>
           {/* <Text style={styles.text}>
                         Please provide the above documents and information in
