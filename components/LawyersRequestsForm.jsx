@@ -19,12 +19,9 @@ const LawyersRequest = dynamic(() => import("./DownloadPDF"), {
   ssr: false,
 });
 
-export default function LawyersRequestForm({ currentLanguage, item }) {
+export default function LawyersRequestForm({ currentLanguage, requestEn }) {
   const language = currentLanguage === "ua" ? "uk" : currentLanguage;
   const { user } = useContext(AppContext);
-  console.log(item);
-  
-
 
   const [formData, setFormData] = useState({
     name: "", //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
@@ -76,16 +73,73 @@ export default function LawyersRequestForm({ currentLanguage, item }) {
   const [error, setError] = useState(null);
 
   const requestTypeMap = {
-    "РАЦС": ["name", "surname", "fatherName", "requesterBirthday", "requesterName", "requesterFile", "deathDay", "couplePIB1", "couplePIB2", "dateResidence"],
-    "АДПСУ": ["citizenship", "passportNum", "dateBorderCrossingStart", "dateBorderCrossingEnd"],
+    РАЦС: [
+      "name",
+      "surname",
+      "fatherName",
+      "requesterBirthday",
+      "requesterName",
+      "requesterFile",
+      "birthday",
+      "deathDay",
+      "couplePIB1",
+      "couplePIB2",
+      "dateResidence",
+    ],
+    АДПСУ: [
+      "name",
+      "surname",
+      "fatherName",
+      "birthday",
+      "citizenship",
+      "passportNum",
+      "dateBorderCrossingStart",
+      "dateBorderCrossingEnd",
+    ],
+    "МОУ і ТЦК": [
+      "name",
+      "surname",
+      "fatherName",
+      "birthday",
+      "tckName",
+      "tckAddress",
+      "tckEmail",
+    ],
+    ГУНП: [
+      "name",
+      "surname",
+      "fatherName",
+      "birthday",
+      "eventDate",
+      "eventTime",
+      "eventPlace",
+    ],
+    "ПФУ і ДПСУ": ["name", "surname", "fatherName", "ipn"],
+    ВПО: ["name", "surname", "fatherName", "propertyAddress"],
   };
 
-  const filterFieldsByRequestType = () => {
-    const typeKey = item.requestType?.split(" ").pop(); 
+  const requestNameToKeyMap = {
+    "Запити до органів РАЦС": "РАЦС", //ЗАРАЗ ЦЕ ДРАЦС ???
+    "Запити до Адміністрації Державної прикордонної служби України (АДПСУ)":
+      "АДПСУ", //Запити до Державної міграційної служби України (ДМСУ) та адміністрації ДПСУ ????
+    "Запити до Міністерства оборони України (МОУ) та територіальних центрів комплектування (ТЦК)":
+      "МОУ і ТЦК",
+    "Запити до Головного управління Національної поліції України (ГУНП)":
+      "ГУНП", // ?????
+    "Запити до Пенсійного фонду України (ПФУ) та Державної прикордонної служби України (ДПСУ)":
+      "ПФУ і ДПСУ",
+    "Запити, пов’язані з внутрішньо переміщеними особами (ВПО)": "ВПО",
+    //ЗАМІСТЬ ЧОГО МВС???
+  };
+
+  const filterFieldsByRequestType = (requestEn) => {
+    const typeKey = requestNameToKeyMap[requestEn] || "";
     return requestTypeMap[typeKey] || [];
   };
 
-  const visibleFields = filterFieldsByRequestType();
+  const visibleFields = filterFieldsByRequestType(requestEn);
+
+  console.log(visibleFields);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -181,360 +235,403 @@ export default function LawyersRequestForm({ currentLanguage, item }) {
               </select>
             </div>
           </label>
-          {visibleFields.includes("requesterBirthday") && (
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Прізвище:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="surname"
-              name="surname"
-              value={formData.surname}
-              onChange={handleChange}
-              required
-            />
-          </label>
+
+          {visibleFields.includes("surname") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Прізвище:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="Іванов Іван Іванович"
+                type="text"
+                id="surname"
+                name="surname"
+                value={formData.surname}
+                onChange={handleChange}
+                required
+              />
+            </label>
           )}
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Ім`я: <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>По-батькові:</span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="fatherName"
-              name="fatherName"
-              value={formData.fatherName}
-              onChange={handleChange}
-            />
-          </label>
+          {visibleFields.includes("name") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Ім`я: <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="Іванов Іван Іванович"
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              ПІБ (людина яка робить запит):{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="requesterName"
-              name="requesterName"
-              value={formData.requesterName}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("fatherName") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>По-батькові:</span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="Іванов Іван Іванович"
+                type="text"
+                id="fatherName"
+                name="fatherName"
+                value={formData.fatherName}
+                onChange={handleChange}
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Документ який підтверджує рідство:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="file"
-              id="requesterFile"
-              name="requesterFile"
-              value={formData.requesterFile}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("birthday") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата народження:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                name="birthday"
+                id="birthday"
+                value={formData.birthday}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата народження (людина яка робить запит):
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="requesterBirthday"
-              id="requesterBirthday"
-              value={formData.requesterBirthday}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("requesterName") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                ПІБ (людина, яка робить запит):{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="Іванов Іван Іванович"
+                type="text"
+                id="requesterName"
+                name="requesterName"
+                value={formData.requesterName}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата народження:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="birthday"
-              id="birthday"
-              value={formData.birthday}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("requesterFile") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Документ, який підтверджує рідство:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="file"
+                id="requesterFile"
+                name="requesterFile"
+                value={formData.requesterFile}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата смерті:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="deathDay"
-              id="deathDay"
-              value={formData.deathDay}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("requesterBirthday") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата народження (людина, яка робить запит):{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                id="requesterBirthday"
+                name="requesterBirthday"
+                value={formData.requesterBirthday}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Серія та номер маспорту:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="483/473465"
-              type="text"
-              id="passportNum"
-              name="passportNum"
-              value={formData.passportNum}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("deathDay") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата смерті:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                name="deathDay"
+                id="deathDay"
+                value={formData.deathDay}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата початку перетину кордону:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="dateBorderCrossingStart"
-              id="dateBorderCrossingStart"
-              value={formData.dateBorderCrossingStart}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("passportNum") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Серія та номер паспорту:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="483/473465"
+                type="text"
+                id="passportNum"
+                name="passportNum"
+                value={formData.passportNum}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата закінчення перетину кордону:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="dateBorderCrossingEnd"
-              id="dateBorderCrossingEnd"
-              value={formData.dateBorderCrossingEnd}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("dateBorderCrossingStart") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата початку перетину кордону:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                name="dateBorderCrossingStart"
+                id="dateBorderCrossingStart"
+                value={formData.dateBorderCrossingStart}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              ПІБ подружжя (тобто обох супругів):{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Іван Іванович"
-              type="text"
-              id="couplePIB1"
-              name="couplePIB1"
-              value={formData.couplePIB1}
-              onChange={handleChange}
-              required
-              style={{ marginBottom: 15 }}
-            />
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="Іванов Вікторія Іванівна"
-              type="text"
-              id="couplePIB2"
-              name="couplePIB2"
-              value={formData.couplePIB2}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("dateBorderCrossingEnd") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата закінчення перетину кордону:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                name="dateBorderCrossingEnd"
+                id="dateBorderCrossingEnd"
+                value={formData.dateBorderCrossingEnd}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата надання довідки про місце проживання:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="dateResidence"
-              id="dateResidence"
-              value={formData.dateResidence}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("couplePIB1") &&
+            visibleFields.includes("couplePIB2") && (
+              <label className={styles.orderForm__form_lable}>
+                <span className={styles.orderForm__form_span}>
+                  ПІБ подружжя (тобто обох супругів):{" "}
+                  <span className={styles.orderForm__form_required}>*</span>
+                </span>
+                <input
+                  className={styles.orderForm__form_input}
+                  placeholder="Іванов Іван Іванович"
+                  type="text"
+                  id="couplePIB1"
+                  name="couplePIB1"
+                  value={formData.couplePIB1}
+                  onChange={handleChange}
+                  required
+                  style={{ marginBottom: 15 }}
+                />
+                <input
+                  className={styles.orderForm__form_input}
+                  placeholder="Іванов Вікторія Іванівна"
+                  type="text"
+                  id="couplePIB2"
+                  name="couplePIB2"
+                  value={formData.couplePIB2}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Назава (район) ТЦК:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="ТЦК Приклад"
-              type="text"
-              id="tckName"
-              name="tckName"
-              value={formData.tckName}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("dateResidence") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата надання довідки про місце проживання:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                name="dateResidence"
+                id="dateResidence"
+                value={formData.dateResidence}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Адреса ТЦК:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="м.Київ, вул.Вулиця 1"
-              type="text"
-              id="tckAddress"
-              name="tckAddress"
-              value={formData.tckAddress}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("tckName") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Назава (район) ТЦК:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="ТЦК Приклад"
+                type="text"
+                id="tckName"
+                name="tckName"
+                value={formData.tckName}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Електронна пошта ТЦК:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              placeholder="test@gmail.com"
-              type="email"
-              id="tckEmail"
-              name="tckEmail"
-              value={formData.tckEmail}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("tckAddress") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Адреса ТЦК:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="м.Київ, вул.Вулиця 1"
+                type="text"
+                id="tckAddress"
+                name="tckAddress"
+                value={formData.tckAddress}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Дата події:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="date"
-              name="eventDate"
-              id="eventDate"
-              value={formData.eventDate}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("tckEmail") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Електронна пошта ТЦК:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="test@gmail.com"
+                type="email"
+                id="tckEmail"
+                name="tckEmail"
+                value={formData.tckEmail}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Час події:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="time"
-              name="eventTime"
-              id="eventTime"
-              value={formData.eventTime}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("eventDate") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Дата події:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="date"
+                name="eventDate"
+                id="eventDate"
+                value={formData.eventDate}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Місце події:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="text"
-              placeholder="м.Київ, вул.Вулиця 1"
-              name="eventPlace"
-              id="eventPlace"
-              value={formData.eventPlace}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("eventTime") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Час події:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="time"
+                name="eventTime"
+                id="eventTime"
+                value={formData.eventTime}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              ІПН (єдрпоу):{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="text"
-              placeholder="34543456"
-              name="ipn"
-              id="ipn"
-              value={formData.ipn}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("eventPlace") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Місце події:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="text"
+                placeholder="м.Київ, вул.Вулиця 1"
+                name="eventPlace"
+                id="eventPlace"
+                value={formData.eventPlace}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Адреса майна:{" "}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <input
-              className={styles.orderForm__form_input}
-              type="text"
-              placeholder="м.Київ, вул.Вулиця 1"
-              name="propertyAddress"
-              id="propertyAddress"
-              value={formData.propertyAddress}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {visibleFields.includes("ipn") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                ІПН (єдрпоу):{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="text"
+                placeholder="34543456"
+                name="ipn"
+                id="ipn"
+                value={formData.ipn}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
+
+          {visibleFields.includes("propertyAddress") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                Адреса майна:{" "}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                type="text"
+                placeholder="м.Київ, вул.Вулиця 1"
+                name="propertyAddress"
+                id="propertyAddress"
+                value={formData.propertyAddress}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          )}
 
           <button
             onClick={generateAndSavePDF}
@@ -542,8 +639,7 @@ export default function LawyersRequestForm({ currentLanguage, item }) {
             type="submit"
             className={styles.orderForm__form_button}
           >
-
-            {isLoading ? 'Формується...' : 'Відправити PDF'}
+            {isLoading ? "Формується..." : "Відправити PDF"}
           </button>
           {error && <p style={{ color: "red" }}>{error}</p>}
           {downloadLink && (
@@ -553,7 +649,7 @@ export default function LawyersRequestForm({ currentLanguage, item }) {
               </p>
               <a
                 className={styles.orderForm__form_download}
-                style={{textDecoration: 'none'}}
+                style={{ textDecoration: "none" }}
                 href={downloadLink}
                 target="_blank"
                 rel="noopener noreferrer"

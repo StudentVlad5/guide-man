@@ -19,7 +19,8 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const handleOpenForm = () => {
     setIsActiveForm((prevState) => !prevState);
   };
-  console.log(item);
+  const requestEn = item.requestType.ua
+  console.log(requestEn);
 
   return (
     <div className={styles.itemPage}>
@@ -57,7 +58,7 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
           {isActiveForm && (
 
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-              <LawyersRequestForm currentLanguage={locale} />
+              <LawyersRequestForm currentLanguage={locale} requestEn={requestEn} />
             </div>
           )}
         </div>
