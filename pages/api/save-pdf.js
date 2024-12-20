@@ -3,9 +3,10 @@ import fs from 'fs';
 import path from 'path';
 import { renderToStream, Font } from '@react-pdf/renderer';
 import { db } from '../../firebase';
+import { storage } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { generatePDFBuffer } from '../../helpers/pdf';
 import { saveRequestToFirestore } from '../../helpers/firebaseControl';
-import { LawyersRequest } from '../../components/DownloadPDF';
 
 Font.registerHyphenationCallback(word => [word]);
 Font.register({
@@ -40,8 +41,13 @@ export default async function handler(req, res) {
     try {
       const data = req.body;
       console.log('Data for creating PDF:', data);
+      const userUID = data?.uid;
+      if (!userUID) {
+        console.error('Cannot save the file, please log in');
+        throw new Error('UID is required to save the request');
+      }
 
-      // Зчитуємо зображення як Base64
+      // Зчитуємо зображення логотипу як Base64
       const imagePath = path.resolve(
         process.cwd(),
         'public',
@@ -86,27 +92,30 @@ export default async function handler(req, res) {
       // Генеруємо PDF
       const pdfBuffer = await generatePDFBuffer(data);
 
-      // Конвертуємо PDF у Base64
-      const pdfBase64 = pdfBuffer.toString('base64');
-
-      // Отримуємо userId і перевіряємо наявність обов'язкових полів
-      const userUID = data.uid || 'defaultUser';
-      if (!userUID) {
-        throw new Error('UID is required');
-      }
+      // // Конвертуємо PDF у Base64
+      // const pdfBase64 = pdfBuffer.toString('base64');
 
       // Зберігаємо запит у Firestore
+
+      const fileName = `documents/document-${Date.now()}.pdf`;
+      const fileRef = ref(storage, fileName);
+      await uploadBytes(fileRef, pdfBuffer);
+
+      const pdfDocUrl = await getDownloadURL(fileRef);
+      console.log('PDF saved at:', pdfDocUrl);
+
       const newRequest = await saveRequestToFirestore(
         db,
         userUID,
         data,
-        pdfBase64
+        pdfDocUrl
       );
 
       res.status(200).json({
         message: 'PDF saved successfully!',
         request: newRequest,
-        fileUrl: `data:application/pdf;base64,${pdfBase64}`,
+        // fileUrl: `data:application/pdf;base64,${pdfBase64}`,
+        pdfDocUrl,
       });
 
       // pdfStream.on('error', err => {

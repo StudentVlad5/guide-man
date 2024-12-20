@@ -55,8 +55,9 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
             )}
           </button>
           {isActiveForm && (
-            <div style={{ marginTop: 60 }}>
-              <LawyersRequestForm currentLanguage={locale} item={item}/>
+
+            <div style={{ marginTop: 60, marginBottom: 60 }}>
+              <LawyersRequestForm currentLanguage={locale} />
             </div>
           )}
         </div>
