@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
 const getValue = (value, fallback = '') => value || fallback;
 const PIB = value =>
   [value?.surname, value?.name, value?.fatherName || ''].join(' ');
-console.log('PIB:', PIB);
+const Passport = value => [value?.passportNum, 'виданий', 'від'].join(' ');
 
 export const LawyersRequest = ({ data }) => {
   return (

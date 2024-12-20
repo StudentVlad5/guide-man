@@ -110,8 +110,10 @@ export default function LawyersRequestForm({ currentLanguage }) {
     try {
       const response = await axios.post('/api/save-pdf', formData);
       console.log(response.data);
-      if (response.data.fileUrl) {
-        setDownloadLink(response.data.fileUrl);
+      // if (response.data.request?.pdfDocUrl) {
+      //   setDownloadLink(response.request.pdfDocUrl);
+      if (response.data.pdfDocUrl) {
+        setDownloadLink(response.data.pdfDocUrl);
       } else {
         throw new Error('The file URL is missing');
       }
@@ -541,7 +543,7 @@ export default function LawyersRequestForm({ currentLanguage }) {
             type="submit"
             className={styles.orderForm__form_button}
           >
-            {isLoading ? 'Зберігається...' : 'Зберегти PDF'}
+            {isLoading ? 'Формується...' : 'Відправити PDF'}
           </button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {downloadLink && (
@@ -555,7 +557,7 @@ export default function LawyersRequestForm({ currentLanguage }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Завантажити PDF
+                Відкрити PDF
               </a>
             </div>
           )}
