@@ -39,16 +39,6 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
           }}
         />
 
-        <div className={styles.itemPage__iconsWrap}>
-          <a href="https://t.me/emigrant_helper_bot" alt="">
-            <QRCode
-              value="https://t.me/emigrant_helper_bot"
-              logoImage="../telegram-icon.svg"
-              size={200}
-            />
-          </a>
-        </div>
-
         <div className={styles.buttonDiv}>
           <button
             type="button"
@@ -65,9 +55,19 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
           </button>
           {isActiveForm && (
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-              <LawyersRequestForm currentLanguage={locale} />
+              <LawyersRequestForm currentLanguage={locale} request={item} />
             </div>
           )}
+        </div>
+
+        <div className={styles.itemPage__iconsWrap}>
+          <a href="https://t.me/emigrant_helper_bot" alt="">
+            <QRCode
+              value="https://t.me/emigrant_helper_bot"
+              logoImage="../telegram-icon.svg"
+              size={200}
+            />
+          </a>
         </div>
 
         <button className="button-extension button-extension--down">
