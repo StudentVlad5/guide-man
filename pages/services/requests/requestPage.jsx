@@ -1,15 +1,15 @@
-import Link from "next/link";
-import PropTypes from "prop-types";
-import { getRightData } from "../../../helpers/rightData";
-import { useRouter } from "next/router";
+import Link from 'next/link';
+import PropTypes from 'prop-types';
+import { getRightData } from '../../../helpers/rightData';
+import { useRouter } from 'next/router';
 
-import styles from "../../../styles/itemPage.module.scss";
-import { ButtonUp } from "../../../components/ButtonUp";
-import { useTranslation } from "next-i18next";
+import styles from '../../../styles/itemPage.module.scss';
+import { ButtonUp } from '../../../components/ButtonUp';
+import { useTranslation } from 'next-i18next';
 
-import { QRCode } from "react-qrcode-logo";
-import { useState } from "react";
-import LawyersRequestForm from "../../../components/LawyersRequestsForm";
+import { QRCode } from 'react-qrcode-logo';
+import { useState } from 'react';
+import LawyersRequestForm from '../../../components/LawyersRequestsForm';
 
 export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const { locale } = useRouter();
@@ -17,27 +17,25 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const [isActiveForm, setIsActiveForm] = useState(false);
 
   const handleOpenForm = () => {
-    setIsActiveForm((prevState) => !prevState);
+    setIsActiveForm(prevState => !prevState);
   };
-  const requestEn = item.requestType.ua
-  console.log(requestEn);
 
   return (
     <div className={styles.itemPage}>
       <div className={styles.itemPage__body}>
         <h1 className={`page__title ${styles.itemPage__title}`}>
-          {item.type === "requests"
+          {item.type === 'requests'
             ? `${item.requestType[locale]}: ${getRightData(
                 item,
                 locale,
-                "title"
+                'title'
               )}`
-            : getRightData(item, locale, "title")}
+            : getRightData(item, locale, 'title')}
         </h1>
         <article
           className={styles.itemPage__text}
           dangerouslySetInnerHTML={{
-            __html: getRightData(item, locale, "preview"),
+            __html: getRightData(item, locale, 'preview'),
           }}
         />
 
@@ -46,7 +44,7 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
             type="button"
             onClick={handleOpenForm}
             className={`${styles.buttonDiv__button} ${
-              isActiveForm ? styles.buttonDiv__button_active : ""
+              isActiveForm ? styles.buttonDiv__button_active : ''
             }`}
           >
             {isActiveForm ? (
@@ -56,9 +54,8 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
             )}
           </button>
           {isActiveForm && (
-
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-              <LawyersRequestForm currentLanguage={locale} requestEn={requestEn} />
+              <LawyersRequestForm currentLanguage={locale} request={item} />
             </div>
           )}
         </div>
