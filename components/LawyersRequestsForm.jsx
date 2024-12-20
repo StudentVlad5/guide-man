@@ -2,6 +2,7 @@
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import { AppContext } from './AppProvider';
 import styles from '../styles/lawyersRequestForm.module.scss';
 
@@ -23,7 +24,6 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   const language = currentLanguage === 'ua' ? 'uk' : currentLanguage;
   const { user } = useContext(AppContext);
   const requestEn = request.requestType.ua;
-  // console.log('requestEn:', requestEn);
 
   const [formData, setFormData] = useState({
     name: '', //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
@@ -134,9 +134,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     const typeKey = requestNameToKeyMap[requestEn] || '';
     return requestTypeMap[typeKey] || [];
   };
-
   const visibleFields = filterFieldsByRequestType(requestEn);
-  // console.log(visibleFields);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -167,12 +165,15 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     try {
       const response = await axios.post('/api/save-pdf', formData);
       console.log(response.data);
-      // if (response.data.request?.pdfDocUrl) {
-      //   setDownloadLink(response.request.pdfDocUrl);
       if (response.data.pdfDocUrl) {
         setDownloadLink(response.data.pdfDocUrl);
-      } else {
-        throw new Error('The file URL is missing');
+      }
+      if (response.data.pdfBase64) {
+        const pdfData = `data:application/pdf;base64,${response.data.pdfBase64}`;
+        const pdfWindow = window.open(pdfData, '_blank');
+        if (!pdfWindow) {
+          throw new Error('Unable to open PDF.');
+        }
       }
     } catch (error) {
       console.error('Error saving PDF:', error);
@@ -660,3 +661,8 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     </>
   );
 }
+
+LawyersRequestForm.propType = {
+  request: PropTypes.object.isRequired,
+  currentLanguage: PropTypes.string,
+};

@@ -88,15 +88,15 @@ export default async function handler(req, res) {
       //   console.log('PDF створено за адресою:', fileUrl);
       //   return res.status(200).json({ fileUrl });
       // });
+      // pdfStream.on('error', err => {
+      //   console.error('Error creating PDF or recording in DB:', err);
+      //   res.status(500).json({ error: 'Failed to create PDF or save to DB' });
+      // });
 
       // Генеруємо PDF
       const pdfBuffer = await generatePDFBuffer(data);
 
-      // // Конвертуємо PDF у Base64
-      // const pdfBase64 = pdfBuffer.toString('base64');
-
       // Зберігаємо запит у Firestore
-
       const fileName = `documents/document-${Date.now()}.pdf`;
       const fileRef = ref(storage, fileName);
       await uploadBytes(fileRef, pdfBuffer);
@@ -114,14 +114,9 @@ export default async function handler(req, res) {
       res.status(200).json({
         message: 'PDF saved successfully!',
         request: newRequest,
-        // fileUrl: `data:application/pdf;base64,${pdfBase64}`,
         pdfDocUrl,
+        // pdfBase64: pdfBuffer.toString('base64'),
       });
-
-      // pdfStream.on('error', err => {
-      //   console.error('Error creating PDF or recording in DB:', err);
-      //   res.status(500).json({ error: 'Failed to create PDF or save to DB' });
-      // });
     } catch (error) {
       console.error('Error creating PDF or recording in DB:', error);
       res.status(500).json({ error: 'Failed to create PDF or save to DB' });

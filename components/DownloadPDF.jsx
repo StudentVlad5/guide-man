@@ -142,11 +142,6 @@ export const LawyersRequest = ({ data }) => {
           </Text>
           <Text style={styles.bold}>АДВОКАТ</Text>
           <Text style={styles.bold}>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text>
-          {/* <Text style={styles.bold}>
-                        NATIONAL ASSOCIATION OF LAWYERS OF UKRAINE
-                    </Text>
-                    <Text style={styles.bold}>LAWYER</Text>
-                    <Text style={styles.bold}>STROGIY VALERIY FEDOROVYCH</Text> */}
         </View>
         <View style={styles.header}>
           <Text style={styles.italic}>
@@ -157,17 +152,6 @@ export const LawyersRequest = ({ data }) => {
             <Link href="mailto:pcentr27@gmail.com">pcentr27@gmail.com</Link>{' '}
             свідоцтво №278 від 18 липня 2005 року
           </Text>
-          {/* <Text style={styles.italic}>
-                        address: Kharkiv, Klochkivska st., 350, mobile phone
-                        095-642-94-14,
-                    </Text>
-                    <Text style={styles.italic}>
-                        e-mail{' '}
-                        <Link href="mailto:pcentr27@gmail.com">
-                            pcentr27@gmail.com
-                        </Link>{' '}
-                        certificate №278 dated July 18, 2005
-                    </Text> */}
         </View>
         <View style={styles.address}>
           <View style={styles.section}>
@@ -182,12 +166,6 @@ export const LawyersRequest = ({ data }) => {
             <Text style={styles.textNoIndent}>
               Адреса: {getValue(data.recipient?.address)}
             </Text>
-            {/* <Text style={styles.textNoIndent}>
-                            To {getValue(data.recipient?.name)}
-                        </Text>
-                        <Text style={styles.textNoIndent}>
-                            Address: {getValue(data.recipient?.address)}
-                        </Text> */}
           </View>
         </View>
         <View style={styles.sectionTitle}>
@@ -196,11 +174,6 @@ export const LawyersRequest = ({ data }) => {
             (в порядку статей 20, 24 Закону України «Про адвокатуру та
             адвокатську діяльність»)
           </Text>
-          {/* <Text style={styles.title}>REQUEST</Text>
-                    <Text style={styles.subtitle}>
-                        (in accordance with Articles 20, 24 of the Law of
-                        Ukraine “On the Bar and Advocacy”)
-                    </Text> */}
         </View>
         <View style={styles.section}>
           <Text style={styles.text}>
@@ -216,25 +189,9 @@ export const LawyersRequest = ({ data }) => {
             інформації з обмеженим доступом і копій документів, в яких міститься
             інформація з обмеженим доступом (ч. 2).
           </Text>
-          {/* <Text style={styles.text}>
-                        According to Article 24 of the Law of Ukraine “On
-                        Advocacy and Advocacy Activities”, a state authority, a
-                        local self-government body, their officials and
-                        employees, heads of enterprises, institutions,
-                        organizations, public associations to whom a request for
-                        an attorney has been sent, are obliged to{' '}
-                        <Text style={styles.underline}>
-                            no later than five business days from the date of
-                            receipt of the request{' '}
-                        </Text>{' '}
-                        provide the lawyer with relevant information, copies of
-                        documents, except for restricted information and copies
-                        of documents, containing restricted information (part
-                        2).
-                    </Text> */}
         </View>
 
-        {/* <View style={styles.section}>{request?.ua.text || ''}</View> */}
+        <View style={styles.section}>{data.request?.ua.text || ''}</View>
 
         <View style={styles.section}>
           <Text style={styles.text}>
@@ -246,20 +203,6 @@ export const LawyersRequest = ({ data }) => {
             Даний запит подається в інтересах {PIB(data)}, з його згодою на збір
             та обробку персональних даних відповідно до законодавства України.
           </Text>
-          {/* <Text style={styles.text}>
-                        Please provide the above documents and information in
-                        the form of certified copies and send them to the
-                        following address:{' '}
-                        <Text style={styles.boldItalic}>
-                            pcentr27@gmail.com.
-                        </Text>
-                    </Text>
-                    <Text style={styles.text}>
-                        This request is submitted in the interests of{' '}
-                        {getValue(data.name)}, with its consent to the
-                        collection and processing of personal data in accordance
-                        with the legislation of Ukraine.
-                    </Text> */}
         </View>
         <View style={styles.apps}>
           <Text style={styles.italic}>Додаток:{'   '} </Text>
@@ -272,25 +215,11 @@ export const LawyersRequest = ({ data }) => {
               - згода на розголошення персональних даних
             </Text>
           </View>
-          {/* <Text style={styles.italic}>Addition: </Text>
-                    <View style={styles.list}>
-                        <Text style={styles.italic}>- copy of the order </Text>
-                        <Text style={styles.italic}>
-                            - copy of the certificate of the right to practice
-                            law
-                        </Text>
-                        <Text style={styles.italic}>
-                            - consent to the disclosure of personal data
-                        </Text> */}
-          {/* </View> */}
         </View>
         <View style={styles.signature}>
           <Text style={styles.textNoIndent}>З повагою, адвокат</Text>
           <Text style={styles.textNoIndent}>(підпис)</Text>
           <Text style={styles.textNoIndent}>В.Ф.Строгий</Text>
-          {/* <Text style={styles.textNoIndent}>Sincerely, lawyer</Text>
-                    <Text style={styles.textNoIndent}>(signature)</Text>
-                    <Text style={styles.textNoIndent}>V.F.Strohy</Text> */}
         </View>
       </Page>
     </Document>
