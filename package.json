@@ -12,6 +12,7 @@
     "axios": "^1.7.9",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
+    "docusign-esign": "^8.0.1",
     "dotenv": "^16.0.3",
     "firebase": "^9.18.0",
     "gh-pages": "^5.0.0",
