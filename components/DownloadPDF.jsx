@@ -19,35 +19,33 @@ const styles = StyleSheet.create({
     paddingLeft: 100,
     paddingRight: 50,
     fontFamily: 'Roboto',
-    fontSize: 14,
-    lineHeight: 1.3,
+    fontSize: 16,
     fontStyle: 'normal',
+    lineHeight: 1.3,
+    letterSpacing: '-0.35px',
   },
   header: {
     display: 'flex',
     flexDirection: 'column',
     marginTop: 10,
     marginBottom: 10,
-    textAlign: 'right',
+    fontSize: 14,
   },
   headerTitle: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 10,
     paddingBottom: 10,
-    fontSize: 16,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
     textAlign: 'center',
     borderBottomColor: 'black',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
-  sectionTitle: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 15,
-    padding: 10,
-    textAlign: 'center',
+  headerSubtitle: {
+    paddingTop: 10,
+    fontStyle: 'italic',
+    lineHeight: 0.9,
+    letterSpacing: '-0.75px',
+    textAlign: 'left',
   },
   section: {
     display: 'flex',
@@ -62,15 +60,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 40,
     paddingRight: 50,
+    fontSize: 14,
+  },
+  sectionTitle: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: 15,
+    fontSize: 14,
+    textAlign: 'center',
   },
   title: {
-    fontSize: 16,
     textTransform: 'uppercase',
     textAlign: 'center',
   },
   subtitle: {
     textAlign: 'center',
-    textIndent: 20,
   },
   text: {
     textIndent: 30,
@@ -93,30 +97,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecoration: 'underline',
   },
-  appeal: {
-    display: 'block',
-    fontSize: 18,
-    textTransform: 'uppercase',
-    textAlign: 'center',
-  },
   apps: {
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    marginTop: 50,
-    paddingLeft: 60,
+    marginTop: 30,
+    paddingLeft: 40,
     paddingRight: 40,
   },
   signature: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 60,
-    fontSize: 16,
+    marginTop: 80,
   },
   img: {
     width: 50,
-    height: 70,
+    height: 55,
     marginBottom: 10,
     alignSelf: 'center',
   },
@@ -130,10 +127,19 @@ const getPassport = value => [value?.passportNum, 'виданий', 'від'].jo
 // Функція для обробки вхідних даних
 const parseRequestContent = (content, data) => {
   // Замінюємо плейсхолдери
-  const parsedContent = content.replace(
-    '{PIB(data)}',
-    PIB(data) || 'невідомий клієнт'
-  );
+  const parsedContent = content
+    .replace('[П.І.Б. клієнта]', PIB(data) || 'невідомий клієнт')
+    .replace(
+      '[вказати адресу майна]',
+      data?.propertyAddress || 'адреса невідома'
+    )
+    .replace(
+      '[вказати дату та місце події]',
+      [
+        data?.eventDate || 'дата невідома',
+        data?.eventPlace || 'адреса невідома',
+      ].join(' ')
+    );
 
   // Видаляємо теги <p>, <ul> і <li>, розділяємо текст і список
   const introText = parsedContent
@@ -159,25 +165,27 @@ export const LawyersRequest = ({ data }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.headerTitle}>
-          <Image src={data.emblemBase64} style={styles.img} alt="emblem" />
-          <Text style={styles.bold}>
-            НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
-          </Text>
-          <Text style={styles.bold}>АДВОКАТ</Text>
-          <Text style={styles.bold}>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text>
-        </View>
         <View style={styles.header}>
-          <Text style={styles.italic}>
-            адреса: м.Харків, вул.Клочківська,350, моб.тел. 095-642-94-14,
-          </Text>
-          <Text style={styles.italic}>
-            ел.пошта{' '}
-            <Link href="mailto:info.ggs.ua@gmail.com">
-              info.ggs.ua@gmail.com
-            </Link>{' '}
-            свідоцтво №278 від 18 липня 2005 року
-          </Text>
+          <View style={styles.headerTitle}>
+            <Image src={data.emblemBase64} style={styles.img} alt="emblem" />
+            <Text style={{ fontSize: 16 }}>
+              НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
+            </Text>
+            <Text>АДВОКАТ</Text>
+            <Text>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text>
+          </View>
+          <View style={styles.headerSubtitle}>
+            <Text>
+              адреса: м.Харків, вул.Клочківська, 350, моб.тел. 095-642-94-14,
+            </Text>
+            <Text>
+              ел.пошта{' '}
+              <Link href="mailto:info.ggs.ua@gmail.com">
+                info.ggs.ua@gmail.com
+              </Link>{' '}
+              свідоцтво №278 від 18 липня 2005 року
+            </Text>
+          </View>
         </View>
         <View style={styles.address}>
           <View style={styles.section}>

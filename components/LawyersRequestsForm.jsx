@@ -1,5 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
+import PropTypes from 'prop-types';
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AppContext } from './AppProvider';
@@ -259,7 +260,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </span>
               <input
                 className={styles.orderForm__form_input}
-                placeholder="Іванов Іван Іванович"
+                placeholder="Степаненко"
                 type="text"
                 id="surname"
                 name="surname"
@@ -282,7 +283,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </span>
               <input
                 className={styles.orderForm__form_input}
-                placeholder="Іванов Іван Іванович"
+                placeholder="Степан"
                 type="text"
                 id="name"
                 name="name"
@@ -304,7 +305,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </span>
               <input
                 className={styles.orderForm__form_input}
-                placeholder="Іванов Іван Іванович"
+                placeholder="Степанович"
                 type="text"
                 id="fatherName"
                 name="fatherName"
@@ -768,13 +769,27 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
             type="submit"
             className={styles.orderForm__form_button}
           >
-            {isLoading ? 'Формується...' : 'Сформовано PDF'}
+            {isLoading
+              ? language === 'uk'
+                ? 'Формується...'
+                : language === 'ru'
+                ? 'Формируется...'
+                : 'Generating...'
+              : language === 'uk'
+              ? 'Сформовано PDF'
+              : language === 'ru'
+              ? 'Сформировано PDF'
+              : 'PDF generated'}
           </button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {downloadLink && (
             <div className={styles.orderForm__form_file}>
               <p className={styles.orderForm__form_file_text}>
-                Ваш файл готовий:
+                {language === 'uk'
+                  ? 'Ваш файл готовий:'
+                  : language === 'ru'
+                  ? 'Ваш файл готов:'
+                  : 'Your file is ready:'}
               </p>
               <a
                 className={styles.orderForm__form_download}
@@ -783,7 +798,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Завантажити PDF
+                {language === 'uk'
+                  ? 'Завантажити PDF'
+                  : language === 'ru'
+                  ? 'Скачать PDF'
+                  : 'Download PDF'}
               </a>
             </div>
           )}
