@@ -64,7 +64,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     ipn: '', //ПФУ і ДПСУ
     propertyAddress: '', //ВПО
     uid: user?.uid || '',
-    request,
+    request: request,
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -160,11 +160,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   const generateAndSavePDF = async () => {
     setIsLoading(true);
     setError(null);
-    console.log(formData);
+    // console.log(formData);
 
     try {
       const response = await axios.post('/api/save-pdf', formData);
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.pdfDocUrl) {
         setDownloadLink(response.data.pdfDocUrl);
       }
@@ -632,12 +632,14 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           )}
 
           <button
-            onClick={generateAndSavePDF}
+            onClick={e => {
+              handleSubmit(e), generateAndSavePDF();
+            }}
             disabled={isLoading}
             type="submit"
             className={styles.orderForm__form_button}
           >
-            {isLoading ? 'Формується...' : 'Відправити PDF'}
+            {isLoading ? 'Формується...' : 'Сформовано PDF'}
           </button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           {downloadLink && (
@@ -652,7 +654,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Відкрити PDF
+                Завантажити PDF
               </a>
             </div>
           )}

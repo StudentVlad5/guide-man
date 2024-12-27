@@ -345,8 +345,9 @@ export const saveRequestToFirestore = async (db, uid, data, pdfDocUrl) => {
   }
 };
 
-export const uploadPDFToStorage = async (pdfBuffer, fileName) => {
-  const storageRef = ref(storage, fileName);
+export const uploadPDFToStorage = async (pdfBuffer, fileName, storage) => {
+  // const storageRef = ref(storage, fileName);
+  const storageRef = ref(storage, `documents/${fileName}`);
 
   try {
     // Завантажуємо PDF у Firebase Storage

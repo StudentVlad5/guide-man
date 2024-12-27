@@ -107,10 +107,6 @@ const styles = StyleSheet.create({
     paddingLeft: 60,
     paddingRight: 40,
   },
-  list: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
   signature: {
     display: 'flex',
     flexDirection: 'row',
@@ -129,9 +125,37 @@ const styles = StyleSheet.create({
 const getValue = (value, fallback = '') => value || fallback;
 const PIB = value =>
   [value?.surname, value?.name, value?.fatherName || ''].join(' ');
-const Passport = value => [value?.passportNum, 'виданий', 'від'].join(' ');
+const getPassport = value => [value?.passportNum, 'виданий', 'від'].join(' ');
+
+// Функція для обробки вхідних даних
+const parseRequestContent = (content, data) => {
+  // Замінюємо плейсхолдери
+  const parsedContent = content.replace(
+    '{PIB(data)}',
+    PIB(data) || 'невідомий клієнт'
+  );
+
+  // Видаляємо теги <p>, <ul> і <li>, розділяємо текст і список
+  const introText = parsedContent
+    .split('<ul>')[0]
+    .replace(/<\/?p[^>]*>/g, '')
+    .trim();
+
+  const listItems =
+    parsedContent
+      .match(/<li>.*?<\/li>/g)
+      ?.map(item => item.replace(/<\/?li[^>]*>/g, '').trim()) || [];
+
+  // Повертаємо розділені частини
+  return { introText, listItems };
+};
 
 export const LawyersRequest = ({ data }) => {
+  const requestText = data?.request?.ua?.text;
+  const { introText, listItems } = requestText
+    ? parseRequestContent(requestText, data)
+    : { introText: 'Дані відсутні', listItems: [] };
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -149,7 +173,9 @@ export const LawyersRequest = ({ data }) => {
           </Text>
           <Text style={styles.italic}>
             ел.пошта{' '}
-            <Link href="mailto:pcentr27@gmail.com">pcentr27@gmail.com</Link>{' '}
+            <Link href="mailto:info.ggs.ua@gmail.com">
+              info.ggs.ua@gmail.com
+            </Link>{' '}
             свідоцтво №278 від 18 липня 2005 року
           </Text>
         </View>
@@ -191,17 +217,33 @@ export const LawyersRequest = ({ data }) => {
           </Text>
         </View>
 
-        <View style={styles.section}>{data.request?.ua.text || ''}</View>
+        <View style={styles.section}>
+          <Text style={styles.text}>{introText}</Text>
+        </View>
+
+        {listItems.length > 0 && (
+          <View style={styles.section}>
+            {listItems.map((item, index) => (
+              <Text style={styles.textNoIndent} key={`item-${index}`}>
+                {item}
+              </Text>
+            ))}
+          </View>
+        )}
 
         <View style={styles.section}>
-          <Text style={styles.text}>
-            Прошу надати зазначені документи та інформацію у вигляді засвідчених
-            копій та направити їх за наступною адресою:{' '}
-            <Text style={styles.boldItalic}>pcentr27@gmail.com.</Text>
-          </Text>
-          <Text style={styles.text}>
+          <Text style={styles.textNoIndent}>
             Даний запит подається в інтересах {PIB(data)}, з його згодою на збір
             та обробку персональних даних відповідно до законодавства України.
+          </Text>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.textNoIndent}>
+            <Text style={styles.bold}>
+              Відповідь на даний запит надіслати електронною поштою на адресу:{' '}
+              <Text style={styles.italic}>info.ggs.ua@gmail.com</Text> в
+              п’ятиденний термін з дня отримання даного запиту.
+            </Text>
           </Text>
         </View>
         <View style={styles.apps}>
@@ -218,7 +260,7 @@ export const LawyersRequest = ({ data }) => {
         </View>
         <View style={styles.signature}>
           <Text style={styles.textNoIndent}>З повагою, адвокат</Text>
-          <Text style={styles.textNoIndent}>(підпис)</Text>
+          <Text style={styles.textNoIndent}>______</Text>
           <Text style={styles.textNoIndent}>В.Ф.Строгий</Text>
         </View>
       </Page>
