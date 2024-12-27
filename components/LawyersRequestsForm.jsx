@@ -2,7 +2,6 @@
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import PropTypes from 'prop-types';
 import { AppContext } from './AppProvider';
 import styles from '../styles/lawyersRequestForm.module.scss';
 
@@ -10,6 +9,7 @@ import countries from 'i18n-iso-countries';
 import ukLocale from 'i18n-iso-countries/langs/uk.json';
 import ruLocale from 'i18n-iso-countries/langs/ru.json';
 import enLocale from 'i18n-iso-countries/langs/en.json';
+import { useTranslation } from 'react-i18next';
 
 countries.registerLocale(ukLocale);
 countries.registerLocale(ruLocale);
@@ -22,6 +22,7 @@ const LawyersRequest = dynamic(() => import('./DownloadPDF'), {
 
 export default function LawyersRequestForm({ currentLanguage, request }) {
   const language = currentLanguage === 'ua' ? 'uk' : currentLanguage;
+  const { t } = useTranslation();
   const { user } = useContext(AppContext);
   const requestEn = request.requestType.ua;
 
@@ -48,6 +49,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     },
     citizenship: '', //АДПСУ,
     passportNum: '', //АДПСУ,
+    pmjNum: '', //АДПСУ,
     dateBorderCrossingStart: '', //АДПСУ,
     dateBorderCrossingEnd: '', //АДПСУ,
     // ПІБ подружжя(тобто обох супругів)
@@ -91,6 +93,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       'birthday',
       'citizenship',
       'passportNum',
+      'pmjNum',
       'dateBorderCrossingStart',
       'dateBorderCrossingEnd',
     ],
@@ -103,7 +106,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       'tckAddress',
       'tckEmail',
     ],
-    ГУНП: [
+    МВС: [
       'name',
       'surname',
       'fatherName',
@@ -117,17 +120,15 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   };
 
   const requestNameToKeyMap = {
-    'Запити до органів РАЦС': 'РАЦС', //ЗАРАЗ ЦЕ ДРАЦС ???
-    'Запити до Адміністрації Державної прикордонної служби України (АДПСУ)':
-      'АДПСУ', //Запити до Державної міграційної служби України (ДМСУ) та адміністрації ДПСУ ????
+    'Запити до органів ДРАЦС (реєстрація актів цивільного стану)': 'РАЦС',
+    'Запити до Державної міграційної служби України (ДМСУ) та адміністрації ДПСУ':
+      'АДПСУ',
     'Запити до Міністерства оборони України (МОУ) та територіальних центрів комплектування (ТЦК)':
       'МОУ і ТЦК',
-    'Запити до Головного управління Національної поліції України (ГУНП)':
-      'ГУНП', // ?????
+    'Запити до Міністерства внутрішніх справ України (МВС)': 'МВС',
     'Запити до Пенсійного фонду України (ПФУ) та Державної прикордонної служби України (ДПСУ)':
       'ПФУ і ДПСУ',
     'Запити, пов’язані з внутрішньо переміщеними особами (ВПО)': 'ВПО',
-    //ЗАМІСТЬ ЧОГО МВС???
   };
 
   const filterFieldsByRequestType = requestEn => {
@@ -203,41 +204,57 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     <>
       <div className={styles.orderForm}>
         <form onSubmit={handleSubmit} className={styles.orderForm__form}>
-          <h1>Сформувати адвокатський запит</h1>
+          <h1>
+            {language === 'uk'
+              ? 'Сформувати адвокатський запит:'
+              : language === 'ru'
+              ? 'Сформировать адвокатский запрос:'
+              : 'Create a lawyer request:'}
+          </h1>
 
-          <label className={styles.orderForm__form_lable}>
-            <span className={styles.orderForm__form_span}>
-              Громадянство:{' '}
-              <span className={styles.orderForm__form_required}>*</span>
-            </span>
-            <div className={styles.orderForm__form_selectWrapper}>
-              <select
-                className={styles.orderForm__form_select}
-                name="citizenship"
-                value={formData.citizenship}
-                onChange={handleChange}
-                required
-              >
-                <option value="" disabled>
-                  {language === 'uk'
-                    ? 'Виберіть країну'
-                    : language === 'ru'
-                    ? 'Выберите страну'
-                    : 'Select a country'}
-                </option>
-                {countryList.map(country => (
-                  <option key={country.value} value={country.label}>
-                    {country.label}
+          {visibleFields.includes('citizenship') && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                {language === 'uk'
+                  ? 'Громадянство:'
+                  : language === 'ru'
+                  ? 'Гражданство:'
+                  : 'Citizenship:'}
+                <span className={styles.orderForm__form_required}>*</span>
+              </span>
+              <div className={styles.orderForm__form_selectWrapper}>
+                <select
+                  className={styles.orderForm__form_select}
+                  name="citizenship"
+                  value={formData.citizenship}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>
+                    {language === 'uk'
+                      ? 'Виберіть країну'
+                      : language === 'ru'
+                      ? 'Выберите страну'
+                      : 'Select a country'}
                   </option>
-                ))}
-              </select>
-            </div>
-          </label>
+                  {countryList.map(country => (
+                    <option key={country.value} value={country.label}>
+                      {country.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
+          )}
 
           {visibleFields.includes('surname') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Прізвище:{' '}
+                {language === 'uk'
+                  ? 'Прізвище:'
+                  : language === 'ru'
+                  ? 'Фамилия:'
+                  : 'Surname:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -256,7 +273,12 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('name') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Ім`я: <span className={styles.orderForm__form_required}>*</span>
+                {language === 'uk'
+                  ? 'Ім`я:'
+                  : language === 'ru'
+                  ? 'Имя:'
+                  : 'Name:'}
+                <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
                 className={styles.orderForm__form_input}
@@ -273,7 +295,13 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
 
           {visibleFields.includes('fatherName') && (
             <label className={styles.orderForm__form_lable}>
-              <span className={styles.orderForm__form_span}>По-батькові:</span>
+              <span className={styles.orderForm__form_span}>
+                {language === 'uk'
+                  ? 'По-батькові:'
+                  : language === 'ru'
+                  ? 'Отчество:'
+                  : 'Patronymic:'}
+              </span>
               <input
                 className={styles.orderForm__form_input}
                 placeholder="Іванов Іван Іванович"
@@ -289,7 +317,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('birthday') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата народження:{' '}
+                {language === 'uk'
+                  ? 'Дата народження:'
+                  : language === 'ru'
+                  ? 'Дата рождения:'
+                  : 'Birthday:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -307,7 +339,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('requesterName') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                ПІБ (людина, яка робить запит):{' '}
+                {language === 'uk'
+                  ? 'ПІБ (людина, яка робить запит):'
+                  : language === 'ru'
+                  ? 'ФИО (человек, делающий запрос):'
+                  : 'Full name (person making the request):'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -326,7 +362,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('requesterFile') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Документ, який підтверджує рідство:{' '}
+                {language === 'uk'
+                  ? 'Документ який підтверджує рідство:'
+                  : language === 'ru'
+                  ? 'Документ подтверждающий родство:'
+                  : 'Document confirming kinship:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -344,7 +384,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('requesterBirthday') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата народження (людина, яка робить запит):{' '}
+                {language === 'uk'
+                  ? 'Дата народження (людина, яка робить запит):'
+                  : language === 'ru'
+                  ? 'Дата рождения (человек, делающий запрос):'
+                  : 'Date of birth (person making the request):'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -362,7 +406,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('deathDay') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата смерті:{' '}
+                {language === 'uk'
+                  ? 'Дата смерті:'
+                  : language === 'ru'
+                  ? 'Дата смерти:'
+                  : 'Date of death:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -377,29 +425,66 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
             </label>
           )}
 
-          {visibleFields.includes('passportNum') && (
-            <label className={styles.orderForm__form_lable}>
-              <span className={styles.orderForm__form_span}>
-                Серія та номер паспорту:{' '}
-                <span className={styles.orderForm__form_required}>*</span>
-              </span>
-              <input
-                className={styles.orderForm__form_input}
-                placeholder="483/473465"
-                type="text"
-                id="passportNum"
-                name="passportNum"
-                value={formData.passportNum}
-                onChange={handleChange}
-                required
-              />
-            </label>
-          )}
+          {(formData.citizenship === 'Україна' ||
+            formData.citizenship === 'Украина' ||
+            formData.citizenship === 'Ukraine') &&
+            visibleFields.includes('passportNum') && (
+              <label className={styles.orderForm__form_lable}>
+                <span className={styles.orderForm__form_span}>
+                  {language === 'uk'
+                    ? 'Серія та номер паспорту:'
+                    : language === 'ru'
+                    ? 'Серия и номер паспорта:'
+                    : 'Passport series and number:'}
+                  <span className={styles.orderForm__form_required}>*</span>
+                </span>
+                <input
+                  className={styles.orderForm__form_input}
+                  placeholder="483/473465"
+                  type="text"
+                  id="passportNum"
+                  name="passportNum"
+                  value={formData.passportNum}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            )}
+
+          {formData.citizenship !== 'Україна' &&
+            formData.citizenship !== 'Украина' &&
+            formData.citizenship !== 'Ukraine' &&
+            visibleFields.includes('pmjNum') && (
+              <label className={styles.orderForm__form_lable}>
+                <span className={styles.orderForm__form_span}>
+                  {language === 'uk'
+                    ? 'Посвідка на проживання:'
+                    : language === 'ru'
+                    ? 'Вид на жительство:'
+                    : 'Residence permit:'}
+                  <span className={styles.orderForm__form_required}>*</span>
+                </span>
+                <input
+                  className={styles.orderForm__form_input}
+                  placeholder="483/473465"
+                  type="text"
+                  id="pmjNum"
+                  name="pmjNum"
+                  value={formData.pmjNum}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            )}
 
           {visibleFields.includes('dateBorderCrossingStart') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата початку перетину кордону:{' '}
+                {language === 'uk'
+                  ? 'Дата початку перетину кордону:'
+                  : language === 'ru'
+                  ? 'Дата начала пересечения границы:'
+                  : 'Border crossing start date:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -417,7 +502,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('dateBorderCrossingEnd') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата закінчення перетину кордону:{' '}
+                {language === 'uk'
+                  ? 'Дата закінчення перетину кордону:'
+                  : language === 'ru'
+                  ? 'Дата окончания пересечения границы:'
+                  : 'End date of border crossing:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -436,7 +525,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
             visibleFields.includes('couplePIB2') && (
               <label className={styles.orderForm__form_lable}>
                 <span className={styles.orderForm__form_span}>
-                  ПІБ подружжя (тобто обох супругів):{' '}
+                  {language === 'uk'
+                    ? 'ПІБ подружжя (тобто обох супругів):'
+                    : language === 'ru'
+                    ? 'ФИО супругов (то есть обоих супругов):'
+                    : "Spouse's full name (i.e. both spouses):"}
                   <span className={styles.orderForm__form_required}>*</span>
                 </span>
                 <input
@@ -466,7 +559,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('dateResidence') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата надання довідки про місце проживання:{' '}
+                {language === 'uk'
+                  ? 'Дата надання довідки про місце проживання:'
+                  : language === 'ru'
+                  ? 'Дата предоставления справки о месте жительства:'
+                  : 'Date of issuance of residence certificate:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -484,7 +581,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('tckName') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Назава (район) ТЦК:{' '}
+                {language === 'uk'
+                  ? 'Назва (район) ТЦК:'
+                  : language === 'ru'
+                  ? 'Название (район) ТЦК:'
+                  : 'Name (district) of the Territorial Recruitment Centers:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -503,7 +604,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('tckAddress') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Адреса ТЦК:{' '}
+                {language === 'uk'
+                  ? 'Адреса ТЦК:'
+                  : language === 'ru'
+                  ? 'Адрес ТЦК:'
+                  : 'Address of the Territorial Recruitment Centers:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -522,7 +627,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('tckEmail') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Електронна пошта ТЦК:{' '}
+                {language === 'uk'
+                  ? 'Електронна пошта ТЦК:'
+                  : language === 'ru'
+                  ? 'Электронная почта ТЦК:'
+                  : 'Email of the Territorial Recruitment Centers:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -541,7 +650,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('eventDate') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Дата події:{' '}
+                {language === 'uk'
+                  ? 'Дата події:'
+                  : language === 'ru'
+                  ? 'Дата события:'
+                  : 'Event date:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -559,7 +672,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('eventTime') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Час події:{' '}
+                {language === 'uk'
+                  ? 'Час події:'
+                  : language === 'ru'
+                  ? 'Время события:'
+                  : 'Event time:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -577,7 +694,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('eventPlace') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Місце події:{' '}
+                {language === 'uk'
+                  ? 'Місце події:'
+                  : language === 'ru'
+                  ? 'Место события:'
+                  : 'Event location:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -596,7 +717,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('ipn') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                ІПН (єдрпоу):{' '}
+                {language === 'uk'
+                  ? 'ІПН (єдрпоу):'
+                  : language === 'ru'
+                  ? 'ИНН (едрпоу):'
+                  : 'TIN (Edrpou):'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
@@ -615,7 +740,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           {visibleFields.includes('propertyAddress') && (
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
-                Адреса майна:{' '}
+                {language === 'uk'
+                  ? 'Адреса майна:'
+                  : language === 'ru'
+                  ? 'Адрес имущества:'
+                  : 'Property address:'}
                 <span className={styles.orderForm__form_required}>*</span>
               </span>
               <input
