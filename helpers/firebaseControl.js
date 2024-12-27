@@ -310,46 +310,44 @@ export function createNewPost(postInfo, file, type, serviceType) {
   });
 }
 
-export const saveRequestToFirestore = async (db, uid, data, pdfBase64) => {
-  const userRef = doc(db, 'users', uid);
-  console.log('saveRequestToFirestore ~ userRef:', userRef);
+export const saveRequestToFirestore = async (db, uid, data, pdfDocUrl) => {
+  try {
+    // Перевіряємо, чи існує юзер та документ
+    const users = await getCollectionWhereKeyValue('users', 'uid', uid);
 
-  // Перевіряємо, чи існує документ
-  const docSnapshot = await getDoc(userRef);
-  if (!docSnapshot.exists()) {
-    throw new Error(`Користувач із UID ${uid} не знайдений.`);
+    if (!users || users.length === 0) {
+      console.error(`User with UID ${uid} not found in the database.`);
+      throw new Error(`User with UID ${uid} does not exist.`);
+    }
+
+    const user = users[0];
+    const userRef = doc(db, 'users', user.idPost);
+
+    // Формуємо новий запит
+    const newRequest = {
+      id: Math.floor(Date.now() * Math.random()).toString(),
+      dateCreating: format(new Date(), 'yyyy-MM-dd HH:mm'),
+      title: data.request.ua.title || 'Запит',
+      pdfDoc: pdfDocUrl,
+      numberOrder: data.numberOrder || '',
+    };
+
+    // Оновлюємо поле `requests` користувача
+    await updateDoc(userRef, {
+      requests: arrayUnion(newRequest),
+    });
+
+    console.log('Request added to existing user document');
+    return newRequest;
+  } catch (error) {
+    console.error('Error saving request to Firestore:', error);
+    throw error;
   }
-  // Створюємо user, якщо його немає
-  // await setDoc(userRef, {
-  //   uid: user?.uid,
-  //   name: duserata.name || '',
-  //   dateCreating: format(new Date(), 'yyyy-MM-dd HH:mm'),
-  //   email: user.email || '',
-  //   phoneNumber: user?.phoneNumber || '',
-  //   requests: [],
-  //   role: 'user',
-  // });
-  // }
-
-  // Формуємо новий запит
-  const newRequest = {
-    id: Math.floor(Date.now() * Math.random()).toString(),
-    dateCreating: data.dateCreating || format(new Date(), 'yyyy-MM-dd HH:mm'),
-    title: data.title || 'Запит',
-    pdfDoc: pdfBase64,
-    numberOrder: data.numberOrder || '',
-  };
-
-  // Оновлюємо поле `requests` користувача
-  await updateDoc(userRef, {
-    requests: arrayUnion(newRequest),
-  });
-
-  return newRequest;
 };
 
-export const uploadPDFToStorage = async (pdfBuffer, fileName) => {
-  const storageRef = ref(storage, fileName);
+export const uploadPDFToStorage = async (pdfBuffer, fileName, storage) => {
+  // const storageRef = ref(storage, fileName);
+  const storageRef = ref(storage, `documents/${fileName}`);
 
   try {
     // Завантажуємо PDF у Firebase Storage
