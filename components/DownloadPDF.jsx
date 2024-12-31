@@ -19,35 +19,33 @@ const styles = StyleSheet.create({
     paddingLeft: 100,
     paddingRight: 50,
     fontFamily: 'Roboto',
-    fontSize: 14,
-    lineHeight: 1.3,
+    fontSize: 16,
     fontStyle: 'normal',
+    lineHeight: 1.3,
+    letterSpacing: '-0.35px',
   },
   header: {
     display: 'flex',
     flexDirection: 'column',
     marginTop: 10,
     marginBottom: 10,
-    textAlign: 'right',
+    fontSize: 14,
   },
   headerTitle: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 10,
     paddingBottom: 10,
-    fontSize: 16,
+    fontWeight: 'bold',
     textTransform: 'uppercase',
     textAlign: 'center',
     borderBottomColor: 'black',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
-  sectionTitle: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 15,
-    padding: 10,
-    textAlign: 'center',
+  headerSubtitle: {
+    paddingTop: 10,
+    fontStyle: 'italic',
+    lineHeight: 0.9,
+    letterSpacing: '-0.75px',
+    textAlign: 'left',
   },
   section: {
     display: 'flex',
@@ -62,15 +60,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 40,
     paddingRight: 50,
+    fontSize: 14,
+  },
+  sectionTitle: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: 15,
+    fontSize: 14,
+    textAlign: 'center',
   },
   title: {
-    fontSize: 16,
     textTransform: 'uppercase',
     textAlign: 'center',
   },
   subtitle: {
     textAlign: 'center',
-    textIndent: 20,
   },
   text: {
     textIndent: 30,
@@ -93,34 +97,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecoration: 'underline',
   },
-  appeal: {
-    display: 'block',
-    fontSize: 18,
-    textTransform: 'uppercase',
-    textAlign: 'center',
-  },
   apps: {
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    marginTop: 50,
-    paddingLeft: 60,
+    marginTop: 30,
+    paddingLeft: 40,
     paddingRight: 40,
-  },
-  list: {
-    display: 'flex',
-    flexDirection: 'column',
   },
   signature: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 60,
-    fontSize: 16,
+    marginTop: 80,
   },
   img: {
     width: 50,
-    height: 70,
+    height: 55,
     marginBottom: 10,
     alignSelf: 'center',
   },
@@ -129,45 +122,70 @@ const styles = StyleSheet.create({
 const getValue = (value, fallback = '') => value || fallback;
 const PIB = value =>
   [value?.surname, value?.name, value?.fatherName || ''].join(' ');
-const Passport = value => [value?.passportNum, 'виданий', 'від'].join(' ');
+const getPassport = value => [value?.passportNum, 'виданий', 'від'].join(' ');
+
+// Функція для обробки вхідних даних
+const parseRequestContent = (content, data) => {
+  // Замінюємо плейсхолдери
+  const parsedContent = content
+    .replace('[П.І.Б. клієнта]', PIB(data) || 'невідомий клієнт')
+    .replace(
+      '[вказати адресу майна]',
+      data?.propertyAddress || 'адреса невідома'
+    )
+    .replace(
+      '[вказати дату та місце події]',
+      [
+        data?.eventDate || 'дата невідома',
+        data?.eventPlace || 'адреса невідома',
+      ].join(' ')
+    );
+
+  // Видаляємо теги <p>, <ul> і <li>, розділяємо текст і список
+  const introText = parsedContent
+    .split('<ul>')[0]
+    .replace(/<\/?p[^>]*>/g, '')
+    .trim();
+
+  const listItems =
+    parsedContent
+      .match(/<li>.*?<\/li>/g)
+      ?.map(item => item.replace(/<\/?li[^>]*>/g, '').trim()) || [];
+
+  // Повертаємо розділені частини
+  return { introText, listItems };
+};
 
 export const LawyersRequest = ({ data }) => {
+  const requestText = data?.request?.ua?.text;
+  const { introText, listItems } = requestText
+    ? parseRequestContent(requestText, data)
+    : { introText: 'Дані відсутні', listItems: [] };
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.headerTitle}>
-          <Image src={data.emblemBase64} style={styles.img} alt="emblem" />
-          <Text style={styles.bold}>
-            НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
-          </Text>
-          <Text style={styles.bold}>АДВОКАТ</Text>
-          <Text style={styles.bold}>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text>
-          {/* <Text style={styles.bold}>
-                        NATIONAL ASSOCIATION OF LAWYERS OF UKRAINE
-                    </Text>
-                    <Text style={styles.bold}>LAWYER</Text>
-                    <Text style={styles.bold}>STROGIY VALERIY FEDOROVYCH</Text> */}
-        </View>
         <View style={styles.header}>
-          <Text style={styles.italic}>
-            адреса: м.Харків, вул.Клочківська,350, моб.тел. 095-642-94-14,
-          </Text>
-          <Text style={styles.italic}>
-            ел.пошта{' '}
-            <Link href="mailto:pcentr27@gmail.com">pcentr27@gmail.com</Link>{' '}
-            свідоцтво №278 від 18 липня 2005 року
-          </Text>
-          {/* <Text style={styles.italic}>
-                        address: Kharkiv, Klochkivska st., 350, mobile phone
-                        095-642-94-14,
-                    </Text>
-                    <Text style={styles.italic}>
-                        e-mail{' '}
-                        <Link href="mailto:pcentr27@gmail.com">
-                            pcentr27@gmail.com
-                        </Link>{' '}
-                        certificate №278 dated July 18, 2005
-                    </Text> */}
+          <View style={styles.headerTitle}>
+            <Image src={data.emblemBase64} style={styles.img} alt="emblem" />
+            <Text style={{ fontSize: 16 }}>
+              НАЦІОНАЛЬНА АСОЦІАЦІЯ АДВОКАТІВ УКРАЇНИ
+            </Text>
+            <Text>АДВОКАТ</Text>
+            <Text>СТРОГИЙ ВАЛЕРІЙ ФЕДОРОВИЧ</Text>
+          </View>
+          <View style={styles.headerSubtitle}>
+            <Text>
+              адреса: м.Харків, вул.Клочківська, 350, моб.тел. 095-642-94-14,
+            </Text>
+            <Text>
+              ел.пошта{' '}
+              <Link href="mailto:info.ggs.ua@gmail.com">
+                info.ggs.ua@gmail.com
+              </Link>{' '}
+              свідоцтво №278 від 18 липня 2005 року
+            </Text>
+          </View>
         </View>
         <View style={styles.address}>
           <View style={styles.section}>
@@ -182,12 +200,6 @@ export const LawyersRequest = ({ data }) => {
             <Text style={styles.textNoIndent}>
               Адреса: {getValue(data.recipient?.address)}
             </Text>
-            {/* <Text style={styles.textNoIndent}>
-                            To {getValue(data.recipient?.name)}
-                        </Text>
-                        <Text style={styles.textNoIndent}>
-                            Address: {getValue(data.recipient?.address)}
-                        </Text> */}
           </View>
         </View>
         <View style={styles.sectionTitle}>
@@ -196,11 +208,6 @@ export const LawyersRequest = ({ data }) => {
             (в порядку статей 20, 24 Закону України «Про адвокатуру та
             адвокатську діяльність»)
           </Text>
-          {/* <Text style={styles.title}>REQUEST</Text>
-                    <Text style={styles.subtitle}>
-                        (in accordance with Articles 20, 24 of the Law of
-                        Ukraine “On the Bar and Advocacy”)
-                    </Text> */}
         </View>
         <View style={styles.section}>
           <Text style={styles.text}>
@@ -216,50 +223,36 @@ export const LawyersRequest = ({ data }) => {
             інформації з обмеженим доступом і копій документів, в яких міститься
             інформація з обмеженим доступом (ч. 2).
           </Text>
-          {/* <Text style={styles.text}>
-                        According to Article 24 of the Law of Ukraine “On
-                        Advocacy and Advocacy Activities”, a state authority, a
-                        local self-government body, their officials and
-                        employees, heads of enterprises, institutions,
-                        organizations, public associations to whom a request for
-                        an attorney has been sent, are obliged to{' '}
-                        <Text style={styles.underline}>
-                            no later than five business days from the date of
-                            receipt of the request{' '}
-                        </Text>{' '}
-                        provide the lawyer with relevant information, copies of
-                        documents, except for restricted information and copies
-                        of documents, containing restricted information (part
-                        2).
-                    </Text> */}
         </View>
 
-        {/* <View style={styles.section}>{request?.ua.text || ''}</View> */}
+        <View style={styles.section}>
+          <Text style={styles.text}>{introText}</Text>
+        </View>
+
+        {listItems.length > 0 && (
+          <View style={styles.section}>
+            {listItems.map((item, index) => (
+              <Text style={styles.textNoIndent} key={`item-${index}`}>
+                {item}
+              </Text>
+            ))}
+          </View>
+        )}
 
         <View style={styles.section}>
-          <Text style={styles.text}>
-            Прошу надати зазначені документи та інформацію у вигляді засвідчених
-            копій та направити їх за наступною адресою:{' '}
-            <Text style={styles.boldItalic}>pcentr27@gmail.com.</Text>
-          </Text>
-          <Text style={styles.text}>
+          <Text style={styles.textNoIndent}>
             Даний запит подається в інтересах {PIB(data)}, з його згодою на збір
             та обробку персональних даних відповідно до законодавства України.
           </Text>
-          {/* <Text style={styles.text}>
-                        Please provide the above documents and information in
-                        the form of certified copies and send them to the
-                        following address:{' '}
-                        <Text style={styles.boldItalic}>
-                            pcentr27@gmail.com.
-                        </Text>
-                    </Text>
-                    <Text style={styles.text}>
-                        This request is submitted in the interests of{' '}
-                        {getValue(data.name)}, with its consent to the
-                        collection and processing of personal data in accordance
-                        with the legislation of Ukraine.
-                    </Text> */}
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.textNoIndent}>
+            <Text style={styles.bold}>
+              Відповідь на даний запит надіслати електронною поштою на адресу:{' '}
+              <Text style={styles.italic}>info.ggs.ua@gmail.com</Text> в
+              п’ятиденний термін з дня отримання даного запиту.
+            </Text>
+          </Text>
         </View>
         <View style={styles.apps}>
           <Text style={styles.italic}>Додаток:{'   '} </Text>
@@ -272,25 +265,11 @@ export const LawyersRequest = ({ data }) => {
               - згода на розголошення персональних даних
             </Text>
           </View>
-          {/* <Text style={styles.italic}>Addition: </Text>
-                    <View style={styles.list}>
-                        <Text style={styles.italic}>- copy of the order </Text>
-                        <Text style={styles.italic}>
-                            - copy of the certificate of the right to practice
-                            law
-                        </Text>
-                        <Text style={styles.italic}>
-                            - consent to the disclosure of personal data
-                        </Text> */}
-          {/* </View> */}
         </View>
         <View style={styles.signature}>
           <Text style={styles.textNoIndent}>З повагою, адвокат</Text>
-          <Text style={styles.textNoIndent}>(підпис)</Text>
+          <Text style={styles.textNoIndent}>______</Text>
           <Text style={styles.textNoIndent}>В.Ф.Строгий</Text>
-          {/* <Text style={styles.textNoIndent}>Sincerely, lawyer</Text>
-                    <Text style={styles.textNoIndent}>(signature)</Text>
-                    <Text style={styles.textNoIndent}>V.F.Strohy</Text> */}
         </View>
       </Page>
     </Document>

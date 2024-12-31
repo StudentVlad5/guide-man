@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import PropTypes from "prop-types";
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "./AppProvider";
@@ -25,7 +26,6 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   const { t } = useTranslation();
   const { user } = useContext(AppContext);
   const requestEn = request.requestType.ua;
-  // console.log('requestEn:', requestEn);
 
   const [formData, setFormData] = useState({
     name: "", //АДПСУ, РАЦС, МОУ і ТЦК, ГУНП, ПФУ і ДПСУ, ВПО
@@ -67,7 +67,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     ipn: "", //ПФУ і ДПСУ
     propertyAddress: "", //ВПО
     uid: user?.uid || "",
-    request,
+    request: request,
   });
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -136,9 +136,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     const typeKey = requestNameToKeyMap[requestEn] || "";
     return requestTypeMap[typeKey] || [];
   };
-
   const visibleFields = filterFieldsByRequestType(requestEn);
-  // console.log(visibleFields);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -164,17 +162,20 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   const generateAndSavePDF = async () => {
     setIsLoading(true);
     setError(null);
-    console.log(formData);
+    // console.log(formData);
 
     try {
       const response = await axios.post("/api/save-pdf", formData);
-      console.log(response.data);
-      // if (response.data.request?.pdfDocUrl) {
-      //   setDownloadLink(response.request.pdfDocUrl);
+      // console.log(response.data);
       if (response.data.pdfDocUrl) {
         setDownloadLink(response.data.pdfDocUrl);
-      } else {
-        throw new Error("The file URL is missing");
+      }
+      if (response.data.pdfBase64) {
+        const pdfData = `data:application/pdf;base64,${response.data.pdfBase64}`;
+        const pdfWindow = window.open(pdfData, "_blank");
+        if (!pdfWindow) {
+          throw new Error("Unable to open PDF.");
+        }
       }
     } catch (error) {
       console.error("Error saving PDF:", error);
@@ -259,7 +260,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </span>
               <input
                 className={styles.orderForm__form_input}
-                placeholder="Іванов Іван Іванович"
+                placeholder="Степаненко"
                 type="text"
                 id="surname"
                 name="surname"
@@ -282,7 +283,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </span>
               <input
                 className={styles.orderForm__form_input}
-                placeholder="Іванов Іван Іванович"
+                placeholder="Степан"
                 type="text"
                 id="name"
                 name="name"
@@ -304,7 +305,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </span>
               <input
                 className={styles.orderForm__form_input}
-                placeholder="Іванов Іван Іванович"
+                placeholder="Степанович"
                 type="text"
                 id="fatherName"
                 name="fatherName"
@@ -761,18 +762,34 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
           )}
 
           <button
-            onClick={generateAndSavePDF}
+            onClick={(e) => {
+              handleSubmit(e), generateAndSavePDF();
+            }}
             disabled={isLoading}
             type="submit"
             className={styles.orderForm__form_button}
           >
-            {isLoading ? "Формується..." : "Відправити PDF"}
+            {isLoading
+              ? language === "uk"
+                ? "Формується..."
+                : language === "ru"
+                ? "Формируется..."
+                : "Generating..."
+              : language === "uk"
+              ? "Сформовано PDF"
+              : language === "ru"
+              ? "Сформировано PDF"
+              : "PDF generated"}
           </button>
           {error && <p style={{ color: "red" }}>{error}</p>}
           {downloadLink && (
             <div className={styles.orderForm__form_file}>
               <p className={styles.orderForm__form_file_text}>
-                Ваш файл готовий:
+                {language === "uk"
+                  ? "Ваш файл готовий:"
+                  : language === "ru"
+                  ? "Ваш файл готов:"
+                  : "Your file is ready:"}
               </p>
               <a
                 className={styles.orderForm__form_download}
@@ -781,7 +798,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Відкрити PDF
+                {language === "uk"
+                  ? "Завантажити PDF"
+                  : language === "ru"
+                  ? "Скачать PDF"
+                  : "Download PDF"}
               </a>
             </div>
           )}
@@ -794,3 +815,8 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     </>
   );
 }
+
+LawyersRequestForm.propType = {
+  request: PropTypes.object.isRequired,
+  currentLanguage: PropTypes.string,
+};

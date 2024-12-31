@@ -6,7 +6,11 @@ import { db } from '../../firebase';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { generatePDFBuffer } from '../../helpers/pdf';
-import { saveRequestToFirestore } from '../../helpers/firebaseControl';
+import {
+  saveRequestToFirestore,
+  uploadPDFToStorage,
+} from '../../helpers/firebaseControl';
+import { LawyersRequest } from '../../components/DownloadPDF';
 
 Font.registerHyphenationCallback(word => [word]);
 Font.register({
@@ -62,66 +66,34 @@ export default async function handler(req, res) {
       // Додаємо Base64-рядок у дані
       data.emblemBase64 = emblemBase64;
 
-      // // Генеруємо PDF
-      // const pdfStream = await renderToStream(<LawyersRequest data={data} />);
-      // console.log('pdfStream', pdfStream);
-
-      // // Перевіряємо та створюємо папку для документів PDF, якщо вона не існує
-      // const documentsPath = path.resolve(process.cwd(), 'public', 'documents');
-      // console.log('documentsPath', documentsPath);
-
-      // if (!fs.existsSync(documentsPath)) {
-      //   fs.mkdirSync(documentsPath, { recursive: true });
-      // }
-
-      // // Зберігаємо файл PDF на сервері
-      // const fileName = `document-${Date.now()}.pdf`;
-      // const filePath = path.join(documentsPath, fileName);
-
-      // // Пишемо потік у файл
-      // const writeStream = fs.createWriteStream(filePath);
-      // pdfStream.pipe(writeStream);
-
-      // // Чекаємо завершення
-      // pdfStream.on('end', () => {
-      //   const fileUrl = `/documents/${fileName}`;
-      //   console.log('PDF створено за адресою:', fileUrl);
-      //   return res.status(200).json({ fileUrl });
-      // });
-
       // Генеруємо PDF
       const pdfBuffer = await generatePDFBuffer(data);
-
-      // // Конвертуємо PDF у Base64
-      // const pdfBase64 = pdfBuffer.toString('base64');
+      console.log('handler ~ data:', data);
 
       // Зберігаємо запит у Firestore
-
       const fileName = `documents/document-${Date.now()}.pdf`;
       const fileRef = ref(storage, fileName);
       await uploadBytes(fileRef, pdfBuffer);
 
       const pdfDocUrl = await getDownloadURL(fileRef);
       console.log('PDF saved at:', pdfDocUrl);
+      const pdfStream = await uploadPDFToStorage(pdfBuffer, fileName, storage);
+      // console.log('handler ~ pdfStream:', pdfStream);
 
       const newRequest = await saveRequestToFirestore(
         db,
         userUID,
         data,
-        pdfDocUrl
+        pdfDocUrl,
+        pdfStream
       );
 
       res.status(200).json({
         message: 'PDF saved successfully!',
         request: newRequest,
-        // fileUrl: `data:application/pdf;base64,${pdfBase64}`,
         pdfDocUrl,
+        // pdfBase64: pdfBuffer.toString('base64'),
       });
-
-      // pdfStream.on('error', err => {
-      //   console.error('Error creating PDF or recording in DB:', err);
-      //   res.status(500).json({ error: 'Failed to create PDF or save to DB' });
-      // });
     } catch (error) {
       console.error('Error creating PDF or recording in DB:', error);
       res.status(500).json({ error: 'Failed to create PDF or save to DB' });
