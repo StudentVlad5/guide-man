@@ -74,7 +74,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   const [error, setError] = useState(null);
 
   const requestTypeMap = {
-    "РАЦС": [
+    РАЦС: [
       "name",
       "surname",
       "fatherName",
@@ -87,7 +87,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       "couplePIB2",
       "dateResidence",
     ],
-    "АДПСУ": [
+    АДПСУ: [
       "name",
       "surname",
       "fatherName",
@@ -107,7 +107,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       "tckAddress",
       "tckEmail",
     ],
-    "МВС": [
+    МВС: [
       "name",
       "surname",
       "fatherName",
@@ -117,7 +117,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       "eventPlace",
     ],
     "ПФУ і ДПСУ": ["name", "surname", "fatherName", "ipn"],
-    "ВПО": ["name", "surname", "fatherName", "propertyAddress"],
+    ВПО: ["name", "surname", "fatherName", "propertyAddress"],
   };
 
   const requestNameToKeyMap = {
@@ -785,6 +785,10 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </a>
             </div>
           )}
+
+          <button type="button" className={styles.orderForm__form_button}>
+            Далі
+          </button>
         </form>
       </div>
     </>
