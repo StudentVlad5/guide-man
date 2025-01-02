@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
 const getValue = (value, fallback = '') => value || fallback;
 const PIB = value =>
   [value?.surname, value?.name, value?.fatherName || ''].join(' ');
-const getPassport = value => [value?.passportNum, 'виданий', 'від'].join(' ');
 
 // Функція для обробки вхідних даних
 const parseRequestContent = (content, data) => {
