@@ -8,13 +8,22 @@ import { ButtonUp } from "../../../components/ButtonUp";
 import { useTranslation } from "next-i18next";
 
 import { QRCode } from "react-qrcode-logo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LawyersRequestForm from "../../../components/LawyersRequestsForm";
+import { auth } from "../../../helpers/firebaseControl";
 
 export default function LawyersRequestPage({ item, buttonName, linkPath }) {
   const { locale } = useRouter();
   const { t } = useTranslation();
   const [isActiveForm, setIsActiveForm] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userIn = auth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
+    return () => userIn();
+  }, []);
 
   const handleOpenForm = () => {
     setIsActiveForm((prevState) => !prevState);
@@ -39,38 +48,61 @@ export default function LawyersRequestPage({ item, buttonName, linkPath }) {
           }}
         />
 
-        <div className={styles.buttonDiv}>
-          <button
-            type="button"
-            onClick={handleOpenForm}
-            className={`${styles.buttonDiv__button} ${
-              isActiveForm ? styles.buttonDiv__button_active : ""
-            }`}
-          >
-            {isActiveForm ? (
-              <span className={styles.buttonDiv__button_text}>
-                {locale === "ua"
-                  ? "Закрити"
-                  : locale === "ru"
-                  ? "Закрыть"
-                  : "Close"}
-              </span>
-            ) : (
-              <span className={styles.buttonDiv__button_text}>
-                {locale === "ua"
-                  ? "Замовити"
-                  : locale === "ru"
-                  ? "Заказать"
-                  : "Order"}
-              </span>
+        {/* {user ? ( */}
+          <div className={styles.buttonDiv}>
+            <button
+              type="button"
+              onClick={handleOpenForm}
+              className={`${styles.buttonDiv__button} ${
+                isActiveForm ? styles.buttonDiv__button_active : ""
+              }`}
+            >
+              {isActiveForm ? (
+                <span className={styles.buttonDiv__button_text}>
+                  {locale === "ua"
+                    ? "Закрити"
+                    : locale === "ru"
+                    ? "Закрыть"
+                    : "Close"}
+                </span>
+              ) : (
+                <span className={styles.buttonDiv__button_text}>
+                  {locale === "ua"
+                    ? "Замовити"
+                    : locale === "ru"
+                    ? "Заказать"
+                    : "Order"}
+                </span>
+              )}
+            </button>
+            {isActiveForm && (
+              <div style={{ marginTop: 60, marginBottom: 60 }}>
+                <LawyersRequestForm currentLanguage={locale} request={item} />
+              </div>
             )}
-          </button>
-          {isActiveForm && (
-            <div style={{ marginTop: 60, marginBottom: 60 }}>
-              <LawyersRequestForm currentLanguage={locale} request={item} />
-            </div>
-          )}
-        </div>
+          </div>
+        {/* ) : (
+          <div className={styles.buttonDiv}>
+            <p className={styles.buttonDiv__text}>
+              {locale === "ua"
+                ? "Щоб замовити послугу необхідно зареєструватися."
+                : locale === "ru"
+                ? "Чтобы заказать услугу необходимо зарегистрироваться."
+                : "To order the service you need to register."}
+            </p>
+            <a
+              href="/registration"
+              className={styles.buttonDiv__button}
+              style={{ textDecoration: "none" }}
+            >
+              {locale === "ua"
+                ? "Зареєструватися"
+                : locale === "ru"
+                ? "Зарегистрироваться"
+                : "Register"}
+            </a>
+          </div>
+        )} */}
 
         <div className={styles.itemPage__iconsWrap}>
           <a href="https://t.me/emigrant_helper_bot" alt="">
