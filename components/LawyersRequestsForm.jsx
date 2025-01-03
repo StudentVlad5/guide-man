@@ -11,6 +11,7 @@ import ukLocale from "i18n-iso-countries/langs/uk.json";
 import ruLocale from "i18n-iso-countries/langs/ru.json";
 import enLocale from "i18n-iso-countries/langs/en.json";
 import { useTranslation } from "react-i18next";
+import { uploadFile } from "../helpers/firebaseControl";
 
 countries.registerLocale(ukLocale);
 countries.registerLocale(ruLocale);
@@ -49,8 +50,11 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       address: "повна адреса органу",
     },
     citizenship: "", //АДПСУ,
+    // ПАСПОРТИ
+    abroadPassnum: "", //АДПСУ
     passportNum: "", //АДПСУ,
     pmjNum: "", //АДПСУ,
+
     dateBorderCrossingStart: "", //АДПСУ,
     dateBorderCrossingEnd: "", //АДПСУ,
     // ПІБ подружжя(тобто обох супругів)
@@ -94,6 +98,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
       "birthday",
       "citizenship",
       "passportNum",
+      "abroadPassnum",
       "pmjNum",
       "dateBorderCrossingStart",
       "dateBorderCrossingEnd",
@@ -138,7 +143,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
   };
   const visibleFields = filterFieldsByRequestType(requestEn);
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -146,10 +151,49 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
     });
   };
 
+  const handleChangeForFile = async (e) => {
+    const { name, files } = e.target;
+
+    if (name === "requesterFile" && files.length > 0) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: files[0],
+      }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
+
+    const dataToSend = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value instanceof File) {
+        dataToSend.append(key, value, value.name);
+      } else {
+        dataToSend.append(key, value);
+      }
+    });
+
+    fetch("/submit", {
+      method: "POST",
+      body: dataToSend,
+    })
+      .then((response) => response.json())
+      .then((data) => console.log("success", data))
+      .catch((error) => console.error("Error", error));
   };
+
+  // const openFile = () => {
+  //   const file = formData.requesterFile;
+
+  //   if (file) {
+  //     const fileURL = URL.createObjectURL(file);
+  //     window.open(fileURL, "_blank");
+  //   } else {
+  //     alert("Файл не завантажений.");
+  //   }
+  // };
 
   const handleRecipientChange = (e) => {
     const { name, value } = e.target;
@@ -213,7 +257,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               : "Create a lawyer request:"}
           </h1>
 
-          {visibleFields.includes("citizenship") && (
+          {/* {visibleFields.includes("citizenship") && ( */}
             <label className={styles.orderForm__form_lable}>
               <span className={styles.orderForm__form_span}>
                 {language === "uk"
@@ -246,7 +290,7 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
                 </select>
               </div>
             </label>
-          )}
+          {/* )} */}
 
           {visibleFields.includes("surname") && (
             <label className={styles.orderForm__form_lable}>
@@ -375,8 +419,8 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
                 type="file"
                 id="requesterFile"
                 name="requesterFile"
-                value={formData.requesterFile}
-                onChange={handleChange}
+                // value={formData.requesterFile}
+                onChange={handleChangeForFile}
                 required
               />
             </label>
@@ -451,6 +495,27 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
                 />
               </label>
             )}
+
+          {visibleFields.includes("abroadPassnum") && (
+            <label className={styles.orderForm__form_lable}>
+              <span className={styles.orderForm__form_span}>
+                {language === "uk"
+                  ? "Серія та номер закордонного паспорту:"
+                  : language === "ru"
+                  ? "Серия и номер загранпаспорта:"
+                  : "Series and number of the international passport:"}
+              </span>
+              <input
+                className={styles.orderForm__form_input}
+                placeholder="483/473465"
+                type="text"
+                id="abroadPassnum"
+                name="abroadPassnum"
+                value={formData.abroadPassnum}
+                onChange={handleChange}
+              />
+            </label>
+          )}
 
           {formData.citizenship !== "Україна" &&
             formData.citizenship !== "Украина" &&
@@ -806,6 +871,15 @@ export default function LawyersRequestForm({ currentLanguage, request }) {
               </a>
             </div>
           )}
+
+          {/* {formData.requesterFile && (
+            <div>
+              <p>Файл завантажено: {formData.requesterFile.name}</p>
+              <button type="button" onClick={openFile}>
+                Відкрити файл
+              </button>
+            </div>
+          )} */}
 
           <button type="button" className={styles.orderForm__form_button}>
             Далі
